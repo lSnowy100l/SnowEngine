@@ -1,24 +1,43 @@
 #pragma once
 
-#include "Renderer.h"
+#include <fstream>
+#include <iostream>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 #include "Vec3GLf.h"
 #include "Chunk.h"
+#include "Camera.h"
 
-class ChunkRenderer;
+class Renderer;
 
 class MasterRenderer
 {
 private:
-	Vec3GLf _position, _lookAt;
-	// All renderers go here
-	ChunkRenderer* cr;
+	Camera* _camera;
+	std::vector<Renderer*> _renderers;
+	double s = 0, a = 0;
 public:
-	MasterRenderer(const char* CRVSFP, const char* CRFSFP, Vec3GLf position);
+	MasterRenderer(Camera* camera);
 	void renderAll();
-	inline void setPosition(Vec3GLf position) { _position = position; }
-	inline void setLookAt(Vec3GLf lookAt) { _lookAt = lookAt; }
-	inline ChunkRenderer* getChunkRenderer() { return cr; }
+	void addRenderer(Renderer* renderer) { _renderers.push_back(renderer); }
+	inline double getFps() { return 1 / (a - s); }
+	inline Camera* getCamera() { return _camera; }
 	~MasterRenderer();
+};
+
+class Renderer
+{
+protected:
+	GLuint _vertexShaderId, _fragmentShaderId, _programId;
+	MasterRenderer* _renderer;
+public:
+	virtual void render() = 0;
+protected:
+	GLuint genShader(const char* filePath, GLenum type);
+	void clear();
+private:
+	virtual void bindAtributes() = 0;
 };
 
 struct ChunkNode {
@@ -28,14 +47,14 @@ struct ChunkNode {
 
 class ChunkRenderer : public Renderer {
 private:
-	MasterRenderer* _renderer;
 	ChunkNode* first_Chunk;
+	GLint translationMatrixLoc, projectionMatrixLoc;
 private:
 	void renderChunk(const Chunk * chunk);
 public:
 	ChunkRenderer(MasterRenderer* renderer, const char* vertexShaderFilePath, const char* fragmentShaderFilePath);
-	void renderAllChunks();
 	void bindAtributes();
+	void render();
 	void addToRenderList(const Chunk* chunk);
 	~ChunkRenderer();
 };

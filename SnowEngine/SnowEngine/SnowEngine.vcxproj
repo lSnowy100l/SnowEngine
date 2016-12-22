@@ -120,6 +120,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="ChunkRenderer.cpp" />
@@ -132,10 +133,11 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkManager.h" />
     <ClInclude Include="MasterRenderer.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Mat4GLf.h" />
     <ClInclude Include="Vec3GLf.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

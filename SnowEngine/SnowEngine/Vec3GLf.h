@@ -14,6 +14,10 @@ struct Vec3GLf {
 		this->z += v.z;
 		return *this;
 	}
+	Vec3GLf operator-() {
+		return Vec3GLf(-x, -y, -z);
+	}
+
 	float length() {
 		return sqrtf(x*x + y*y + z*z);
 	}

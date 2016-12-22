@@ -9,6 +9,9 @@ Window::Window(int width, int height, const char* title)
 	_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	glfwGetFramebufferSize(_window, &width, &height);
 	glfwMakeContextCurrent(_window);
+	glfwSwapInterval(1);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 }
 
 void Window::update() {
