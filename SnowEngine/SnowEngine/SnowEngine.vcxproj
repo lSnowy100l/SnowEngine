@@ -75,6 +75,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\Carles\Documents\glfw-3.2.1.bin.WIN32\include;C:\Users\Carles\Documents\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\Carles\Documents\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\Users\Carles\Documents\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -96,6 +97,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\Carles\Documents\glfw-3.2.1.bin.WIN32\include;C:\Users\Carles\Documents\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -121,6 +123,8 @@
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="ChunkRenderer.cpp" />
+    <ClCompile Include="MasterRenderer.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Source.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\Carles\Documents\glfw-3.2.1.bin.WIN32\include;C:\Users\Carles\Documents\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\Carles\Documents\glfw-3.2.1.bin.WIN32\include;C:\Users\Carles\Documents\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -130,7 +134,9 @@
   <ItemGroup>
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkManager.h" />
-    <ClInclude Include="ChunkRenderer.h" />
+    <ClInclude Include="MasterRenderer.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Vec3GLf.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

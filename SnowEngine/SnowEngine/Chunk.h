@@ -1,21 +1,35 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <vector>
+#include <sstream>
+
+#define CHUNK_POW 5
+#define CHUNK_FOLDER "chunk_data/"
+
+struct FileChunkNode {
+	GLubyte block_id;
+	GLubyte amount;
+};
 
 class Chunk
 {
 public:
-	static const GLubyte CHUNK_POW = 5;
-	static const GLushort CHUNK_SIZE = 1 << CHUNK_POW;
-	static const GLushort CHUNK_SIZE_SQUARE = CHUNK_SIZE * CHUNK_SIZE;
-	static const GLushort CHUNK_SIZE_CUBE = CHUNK_SIZE_SQUARE * CHUNK_SIZE;
+	static const GLubyte CHUNK_SIZE = 1 << CHUNK_POW;
+	static const GLubyte CHUNK_SIZE_MINUS = CHUNK_SIZE - 1;
 private:
 	GLubyte*** blocks;
 	GLuint x, y, z;
 public:
 	Chunk(GLuint x, GLuint y, GLuint z);
-	inline GLushort toIndex(int x, int y, int z) { return 0 | x | y << CHUNK_POW | z << CHUNK_SIZE_SQUARE; }
-	inline GLbyte getBlock(GLubyte x, GLubyte y, GLubyte z) { return blocks[toIndex(x, y, z)]; }
+	inline GLbyte getBlock(GLubyte x, GLubyte y, GLubyte z) { return blocks[x][y][z]; }
+	void saveToFile();
+	inline void setBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte id) { blocks[x][y][z] = id; }
 	~Chunk();
+private:
+	void loadFromFile(FILE* ptr);
+	void generateChunk();
+	void insertBlock(GLubyte & x, GLubyte & y, GLubyte & z, GLubyte id);
+	std::string getFileName();
 };
 

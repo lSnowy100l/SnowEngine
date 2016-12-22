@@ -1,0 +1,24 @@
+#pragma once
+
+#include <GL/glew.h>
+#include <ostream>
+#include <cmath>
+
+struct Vec3GLf {
+	GLfloat x, y, z;
+	Vec3GLf() : x(0), y(0), z(0) {}
+	Vec3GLf(GLfloat x, GLfloat y, GLfloat z) : x(x), y(y), z(z) {}
+	Vec3GLf& operator+=(const Vec3GLf& v) {
+		this->x += v.x;
+		this->y += v.y;
+		this->z += v.z;
+		return *this;
+	}
+	float length() {
+		return sqrtf(x*x + y*y + z*z);
+	}
+	Vec3GLf normalized() {
+		float l = length();
+		return Vec3GLf(x/l, y/l, z/l);
+	}
+};

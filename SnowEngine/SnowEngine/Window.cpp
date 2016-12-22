@@ -13,7 +13,7 @@ Window::Window(int width, int height, const char* title)
 
 void Window::update() {
 	glClear(GL_COLOR_BUFFER_BIT);
-	_chunk_renderer->renderAllChunks();
+	_renderer->renderAll();
 	glfwSwapBuffers(_window);
 	glfwPollEvents();
 }
