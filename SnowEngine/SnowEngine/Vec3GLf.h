@@ -2,9 +2,10 @@
 
 #include <GL/glew.h>
 #include <ostream>
-#include <cmath>
+#include <math.h>
 
-#define DEG_TO_RAD 0.0174533
+#define PI 3.14159265359
+#define DEG_TO_RAD PI / 180
 
 struct Vec3GLf {
 	GLfloat x, y, z;
@@ -14,6 +15,10 @@ struct Vec3GLf {
 		this->x += v.x;
 		this->y += v.y;
 		this->z += v.z;
+		return *this;
+	}
+	Vec3GLf& operator*=(const Vec3GLf& v) {
+		
 		return *this;
 	}
 	Vec3GLf operator-() {
@@ -29,6 +34,7 @@ struct Vec3GLf {
 	}
 	static Vec3GLf toVector(GLfloat pitch, GLfloat yaw) {
 		double radPitch = pitch * DEG_TO_RAD, radYaw = yaw * DEG_TO_RAD;
-		return Vec3GLf(cosf(radYaw)*cosf(radPitch), sinf(radPitch), sinf(radYaw)*cosf(radPitch));
+		return Vec3GLf(-cosf(radYaw)*cosf(radPitch), sinf(radPitch), sinf(radYaw)*cosf(radPitch));
 	}
+
 };

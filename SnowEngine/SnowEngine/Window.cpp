@@ -59,7 +59,7 @@ void Window::setWindowHints() {
 void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 	Window* w = (Window*) glfwGetWindowUserPointer(window);
 	Camera* c = w->_renderer->getCamera();
-	//c->incPitch((w->lypos - ypos) * SENSIBILITY_Y);
+	c->incPitch((w->lypos - ypos) * SENSIBILITY_Y);
 	c->incYaw((w->lxpos - xpos) * SENSIBILITY_Y);
 	w->lypos = ypos;
 	w->lxpos = xpos;

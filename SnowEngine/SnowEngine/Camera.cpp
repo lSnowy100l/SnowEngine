@@ -11,9 +11,17 @@ Vec3GLf Camera::getLookAt() {
 }
 
 Mat4GLf Camera::getRotationMatrix() {
-	Vec3GLf lookAt = Vec3GLf::toVector(_pitch, _yaw);
-	Vec3GLf rightVector = Vec3GLf::toVector(0, _yaw + 90);
-	Vec3GLf upVector = Vec3GLf::toVector(_pitch + 90, _yaw);
+	/*Vec3GLf lookAt = Vec3GLf::toVector(_pitch, _yaw);
+	Vec3GLf rightVector = Vec3GLf::toVector(0, _yaw - 90);*/
+	Vec3GLf lookAt(1, 0, 0), rightVector(0, 0, 1);
+	Vec3GLf upVector = Vec3GLf(
+		rightVector.y*lookAt.z - rightVector.z*lookAt.y,
+		rightVector.z*lookAt.x - rightVector.x*lookAt.z,
+		rightVector.x*lookAt.y - rightVector.y*lookAt.x);
+	system("CLS");
+	std::cout << "LookAt: " << lookAt.x << ", " << lookAt.y << ", " << lookAt.z << std::endl;
+	std::cout << "RightAt: " << rightVector.x << ", " << rightVector.y << ", " << rightVector.z << std::endl;
+	std::cout << "UpVector: " << upVector.x << ", " << upVector.y << ", " << upVector.z << std::endl;
 	Mat4GLf rotationMatrix = Mat4GLf::viewRotationMatrix(lookAt, rightVector, upVector);
 	return rotationMatrix;
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "Vec3GLf.h"
 #include "Mat4GLf.h"
 

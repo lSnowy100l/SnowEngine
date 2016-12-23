@@ -40,7 +40,7 @@ int main() {
 	glewExperimental = GL_TRUE;
 
 	Camera* camera = new Camera(WIDTH, HEIGHT, 70, 0.01, 1000);
-	camera->incAbsPos(Vec3GLf(0.0, 0.0, 10.0));
+	//camera->incAbsPos(Vec3GLf(0.0, 0.0, 10.0));
 	
 	MasterRenderer* renderer = new MasterRenderer(camera);
 	ChunkRenderer* cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
