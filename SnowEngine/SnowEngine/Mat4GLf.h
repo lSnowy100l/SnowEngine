@@ -33,15 +33,15 @@ struct Mat4GLf {
 	}
 	static Mat4GLf viewRotationMatrix(Vec3GLf lookAt, Vec3GLf rightVector, Vec3GLf upVector) {
 		Mat4GLf m;
-		m.data[0] = rightVector.x;
-		m.data[1] = upVector.y;
-		m.data[2] = lookAt.z;
-		m.data[4] = rightVector.x;
+		m.data[0] = lookAt.x;
+		m.data[1] = upVector.x;
+		m.data[2] = rightVector.x;
+		m.data[4] = lookAt.y;
 		m.data[5] = upVector.y;
-		m.data[6] = lookAt.z;
-		m.data[8] = rightVector.x;
-		m.data[9] = upVector.y;
-		m.data[10] = lookAt.z;
+		m.data[6] = rightVector.y;
+		m.data[8] = lookAt.z;
+		m.data[9] = upVector.z;
+		m.data[10] = rightVector.z;
 		m.data[15] = 1;
 		return m;
 	}

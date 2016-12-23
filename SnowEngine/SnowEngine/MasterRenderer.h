@@ -16,12 +16,12 @@ class MasterRenderer
 private:
 	Camera* _camera;
 	std::vector<Renderer*> _renderers;
-	double s = 0, a = 0;
+	double _s = 0, _a = 0;
 public:
 	MasterRenderer(Camera* camera);
 	void renderAll();
 	void addRenderer(Renderer* renderer) { _renderers.push_back(renderer); }
-	inline double getFps() { return 1 / (a - s); }
+	inline double getFps() { return 1 / (_a - _s); }
 	inline Camera* getCamera() { return _camera; }
 	~MasterRenderer();
 };
@@ -48,7 +48,7 @@ struct ChunkNode {
 class ChunkRenderer : public Renderer {
 private:
 	ChunkNode* first_Chunk;
-	GLint translationMatrixLoc, projectionMatrixLoc;
+	GLint translationMatrixLoc, rotationMatrixLoc, projectionMatrixLoc;
 private:
 	void renderChunk(const Chunk * chunk);
 public:

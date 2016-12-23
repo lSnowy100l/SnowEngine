@@ -4,6 +4,8 @@
 #include <ostream>
 #include <cmath>
 
+#define DEG_TO_RAD 0.0174533
+
 struct Vec3GLf {
 	GLfloat x, y, z;
 	Vec3GLf() : x(0), y(0), z(0) {}
@@ -24,5 +26,9 @@ struct Vec3GLf {
 	Vec3GLf normalized() {
 		float l = length();
 		return Vec3GLf(x/l, y/l, z/l);
+	}
+	static Vec3GLf toVector(GLfloat pitch, GLfloat yaw) {
+		double radPitch = pitch * DEG_TO_RAD, radYaw = yaw * DEG_TO_RAD;
+		return Vec3GLf(cosf(radYaw)*cosf(radPitch), sinf(radPitch), sinf(radYaw)*cosf(radPitch));
 	}
 };

@@ -24,7 +24,7 @@ std::ostream& operator<<(std::ostream& os, Vec3GLf& v) {
 int main() {
 	// GLFW Libraries initialization
 	if (!glfwInit()) {
-		fprintf(stderr, "Error: %s\n", "Failed to initialize GLFW library.");
+		fprintf(stderr, "Error: %_s\n", "Failed to initialize GLFW library.");
 		return 1;
 	}
 
@@ -33,13 +33,14 @@ int main() {
 	// GLEW Libraries initialization
 	GLenum err = glewInit();
 	if (err != GLEW_OK) {
-		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+		fprintf(stderr, "Error: %_s\n", glewGetErrorString(err));
 		return 2;
 	}
 
 	glewExperimental = GL_TRUE;
 
-	Camera* camera = new Camera(WIDTH, HEIGHT, 90, 0.01, 1000);
+	Camera* camera = new Camera(WIDTH, HEIGHT, 70, 0.01, 1000);
+	camera->incAbsPos(Vec3GLf(0.0, 0.0, 10.0));
 	
 	MasterRenderer* renderer = new MasterRenderer(camera);
 	ChunkRenderer* cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
@@ -48,9 +49,9 @@ int main() {
 
 	int i = 0;
 	while (w->shouldClose() == 0) {
-		camera->incPosition(Vec3GLf(0, 0, 0.005));
 		w->update();
 	}
+	
 
 	delete w;
 	delete renderer;

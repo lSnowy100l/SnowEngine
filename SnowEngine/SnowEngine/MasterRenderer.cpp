@@ -9,8 +9,8 @@ MasterRenderer::MasterRenderer(Camera* camera) : _camera(camera)
 void MasterRenderer::renderAll()
 {
 	// Llama a todos los renderizadores a realizar sus respectivos cometidos.
-	s = a;
-	a = glfwGetTime();
+	_s = _a;
+	_a = glfwGetTime();
 	for (Renderer* r : _renderers) {
 		r->render();
 	}
