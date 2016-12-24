@@ -7,18 +7,15 @@
 #include "Window.h"
 #include "Chunk.h"
 #include "MasterRenderer.h"
+#include "common.h"
 
-#define WIDTH 1280
-#define HEIGHT 960
+#define WIDTH 800
+#define HEIGHT 600
 #define TITLE "First Window"
 
 Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
 	v1 += v2;
 	return v1;
-}
-
-std::ostream& operator<<(std::ostream& os, Vec3GLf& v) {
-	return os << "[" << v.x << ", " << v.y << ", " << v.z << "]";
 }
 
 int main() {
@@ -27,6 +24,10 @@ int main() {
 		fprintf(stderr, "Error: %_s\n", "Failed to initialize GLFW library.");
 		return 1;
 	}
+
+	//Show version
+
+	fprintf(stdout, "%s\n", glfwGetVersionString());
 
 	Window* w = new Window(WIDTH, HEIGHT, TITLE);
 
@@ -40,7 +41,7 @@ int main() {
 	glewExperimental = GL_TRUE;
 
 	Camera* camera = new Camera(WIDTH, HEIGHT, 70, 0.01, 1000);
-	//camera->incAbsPos(Vec3GLf(0.0, 0.0, 10.0));
+	camera->incAbsPos(Vec3GLf(0.0, 0.0, 10.0));
 	
 	MasterRenderer* renderer = new MasterRenderer(camera);
 	ChunkRenderer* cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");

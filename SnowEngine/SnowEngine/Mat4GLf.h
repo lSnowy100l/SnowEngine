@@ -31,17 +31,17 @@ struct Mat4GLf {
 		m.data[11] = translation.z;
 		return m;
 	}
-	static Mat4GLf viewRotationMatrix(Vec3GLf lookAt, Vec3GLf rightVector, Vec3GLf upVector) {
+	static Mat4GLf viewRotationMatrix(Vec3GLf leftVector, Vec3GLf forwardVector, Vec3GLf upVector) {
 		Mat4GLf m;
-		m.data[0] = lookAt.x;
+		m.data[0] = leftVector.x;
 		m.data[1] = upVector.x;
-		m.data[2] = rightVector.x;
-		m.data[4] = lookAt.y;
+		m.data[2] = forwardVector.x;
+		m.data[4] = leftVector.y;
 		m.data[5] = upVector.y;
-		m.data[6] = rightVector.y;
-		m.data[8] = lookAt.z;
+		m.data[6] = forwardVector.y;
+		m.data[8] = leftVector.z;
 		m.data[9] = upVector.z;
-		m.data[10] = rightVector.z;
+		m.data[10] = forwardVector.z;
 		m.data[15] = 1;
 		return m;
 	}

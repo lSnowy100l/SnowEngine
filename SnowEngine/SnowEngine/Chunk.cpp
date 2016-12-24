@@ -1,9 +1,13 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "Chunk.h"
+
 
 
 
 Chunk::Chunk(GLuint x, GLuint y, GLuint z) : x(x), y(y), z(z)
 {
+	
 	blocks = new GLubyte**[CHUNK_SIZE];
 	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
 		blocks[x] = new GLubyte*[CHUNK_SIZE];
@@ -33,6 +37,8 @@ std::string Chunk::getFileName()
 {
 	std::stringstream ss;
 	ss << "./" << CHUNK_FOLDER << x << "_" << y << "_" << z << ".chunk";
+
+
 	return ss.str();
 }
 
@@ -100,7 +106,7 @@ void Chunk::saveToFile()
 	for (FileChunkNode buffer : buffers)
 		fwrite(&buffer, sizeof(FileChunkNode), 1, ptr);
 
-	fclose(ptr);
+	fclose(ptr); 
 }
 
 Chunk::~Chunk()
