@@ -37,25 +37,27 @@ protected:
 	GLuint genShader(const char* filePath, GLenum type);
 	void clear();
 private:
-	virtual void bindAtributes() = 0;
+	virtual void getUniformLocations() = 0;
+	virtual void getAttribLocations() = 0;
 };
 
 struct ChunkNode {
 	ChunkNode* next;
-	const Chunk* chunk;
+	Chunk* chunk;
 };
 
 class ChunkRenderer : public Renderer {
 private:
 	ChunkNode* first_Chunk;
-	GLint translationMatrixLoc, rotationMatrixLoc, projectionMatrixLoc;
+	GLint translationMatrixLoc, rotationMatrixLoc, projectionMatrixLoc, chunkTranslationMatrixLoc;
 private:
-	void renderChunk(const Chunk * chunk);
+	void renderChunk(Chunk * chunk);
 public:
 	ChunkRenderer(MasterRenderer* renderer, const char* vertexShaderFilePath, const char* fragmentShaderFilePath);
-	void bindAtributes();
+	void getUniformLocations();
+	void getAttribLocations();
 	void render();
-	void addToRenderList(const Chunk* chunk);
+	void addToRenderList(Chunk* chunk);
 	~ChunkRenderer();
 };
 

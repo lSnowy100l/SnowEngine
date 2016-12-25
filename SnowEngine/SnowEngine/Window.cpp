@@ -13,8 +13,8 @@ Window::Window(int width, int height, const char* title)
 	glfwGetCursorPos(_window, &lxpos, &lypos);
 	glfwSetWindowUserPointer(_window, this);
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 }
 
 void Window::update() {
@@ -27,17 +27,17 @@ void Window::update() {
 
 void Window::processKeyInputs() {
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -0.1));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -0.5));
 	if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(-0.1, 0, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(-0.5, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, 0.1));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, 0.5));
 	if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0.1, 0, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0.5, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		_renderer->getCamera()->incAbsPos(Vec3GLf(0, 0.1, 0));
+		_renderer->getCamera()->incAbsPos(Vec3GLf(0, 0.5, 0));
 	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		_renderer->getCamera()->incAbsPos(Vec3GLf(0, -0.1, 0));
+		_renderer->getCamera()->incAbsPos(Vec3GLf(0, -0.5, 0));
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
 }

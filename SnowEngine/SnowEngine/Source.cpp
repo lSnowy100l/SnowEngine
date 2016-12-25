@@ -47,12 +47,23 @@ int main() {
 	ChunkRenderer* cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
 	renderer->addRenderer(cr);
 	w->associateRenderer(renderer);
+	std::vector<Chunk*> chunks;
+	for (int i = 0; i <= 5; i++) {
+		for (int j = 0; j <= 5; j++) {
+			chunks.push_back(new Chunk(i, 0, j));
+		}
+	}
 
-	int i = 0;
 	while (w->shouldClose() == 0) {
+		for (Chunk* c : chunks) {
+			cr->addToRenderList(c);
+		}
 		w->update();
 	}
-	
+
+	for (Chunk* c : chunks) {
+		delete c;
+	}
 	delete w;
 	delete renderer;
 
