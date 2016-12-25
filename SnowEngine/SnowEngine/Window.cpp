@@ -15,6 +15,9 @@ Window::Window(int width, int height, const char* title)
 	glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);
+	for (bool b : spec_keys) b = false;
+	for (bool b : action_spec_keys) b = false;
+
 }
 
 void Window::update() {
@@ -26,6 +29,8 @@ void Window::update() {
 }
 
 void Window::processKeyInputs() {
+
+	
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
 		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -0.1));
 	if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
@@ -40,6 +45,19 @@ void Window::processKeyInputs() {
 		_renderer->getCamera()->incAbsPos(Vec3GLf(0, -0.1, 0));
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
+
+	if (glfwGetKey(_window, GLFW_KEY_X) == GLFW_PRESS) spec_keys[MY_X_KEY] = true;
+	if (glfwGetKey(_window, GLFW_KEY_X) == GLFW_RELEASE && spec_keys[MY_X_KEY]) handle_key_actions_after_release(MY_X_KEY);
+
+}
+
+void Window::handle_key_actions_after_release(GLuint key) {
+	switch (key) {
+	case MY_X_KEY: if (action_spec_keys[MY_X_KEY]) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	}
+	spec_keys[key] = false;
+	action_spec_keys[key] = !action_spec_keys[key];
 }
 
 Window::~Window()
