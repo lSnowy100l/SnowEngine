@@ -64,6 +64,15 @@ void ChunkRenderer::render() {
 		-1.0f, 1.0f, 1.0f,
 		1.0f,-1.0f, 1.0f
 	};
+	static const GLfloat g_vertex_buffer_data2[] = {
+		0.5, 0.5, 0.0,
+		-0.5, 0.5, 0.0,
+		-0.5, -0.5, 0.0,
+
+		0.5, 0.5, 0.0,
+		0.5, -0.5, 0.0,
+		-0.5, -0.5, 0.0
+	};
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_FLOAT, 0, g_vertex_buffer_data);
 	glDrawArrays(GL_TRIANGLES, 0, 36);

@@ -12,12 +12,13 @@ Window::Window(int width, int height, const char* title)
 	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwGetCursorPos(_window, &lxpos, &lypos);
 	glfwSetWindowUserPointer(_window, this);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 }
 
 void Window::update() {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	processKeyInputs();
 	_renderer->renderAll();
 	glfwSwapBuffers(_window);
@@ -59,8 +60,8 @@ void Window::setWindowHints() {
 void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 	Window* w = (Window*) glfwGetWindowUserPointer(window);
 	Camera* c = w->_renderer->getCamera();
-	c->incPitch((w->lypos - ypos) * -SENSIBILITY_Y);
-	c->incYaw((w->lxpos - xpos) * SENSIBILITY_Y);
+	c->incPitch((ypos - w->lypos) * SENSIBILITY_Y);
+	c->incYaw((xpos - w->lxpos) * SENSIBILITY_X);
 	w->lypos = ypos;
 	w->lxpos = xpos;
 }

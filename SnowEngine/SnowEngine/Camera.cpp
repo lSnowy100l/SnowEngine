@@ -14,23 +14,19 @@ Vec3GLf Camera::getLookAt() {
 }
 
 Mat4GLf Camera::getRotationMatrix() {
-
+#define DEG_TO_RAD 0.01745329251
+	double radPitch = _pitch * DEG_TO_RAD, radYaw = _yaw * DEG_TO_RAD;
+	Vec3GLf right_v	(cosf(radYaw), 0, sinf(radYaw));
+	Vec3GLf up_v	(sinf(radYaw)*sinf(radPitch), cosf(radPitch), -cosf(radYaw)*sinf(radPitch));
+	Vec3GLf back_v	(-sinf(radYaw)*cosf(radPitch), sinf(radPitch), cosf(radYaw)*cosf(radPitch));
 	
-	Vec3GLf forward_v = Vec3GLf::toVector(_pitch, _yaw);
-	std::cout << _position << " @" << forward_v << endl;
-	Vec3GLf left_v = Vec3GLf::toVector(0, _yaw + 90);
-
-
-	//Vec3GLf lookAt(1, 0, 0), rightVector(0, 0, 1);
-	Vec3GLf up_v = Vec3GLf::toVector(_pitch + 90, _yaw);
-	
-	Mat4GLf rotationMatrix = Mat4GLf::viewRotationMatrix(left_v, forward_v, up_v);
+	Mat4GLf rotationMatrix = Mat4GLf::viewRotationMatrix(right_v, back_v, up_v);
 	return rotationMatrix;
 }
 
 void Camera::incRelPos(Vec3GLf increment) {
 	double yawRad = _yaw*DEG_TO_RAD;
-	incAbsPos(Vec3GLf(increment.x*cosf(yawRad) + increment.z*sinf(yawRad), increment.y, increment.z*cosf(yawRad) - increment.x*sinf(yawRad)));
+	incAbsPos(Vec3GLf(increment.x*cosf(yawRad) - increment.z*sinf(yawRad), increment.y, increment.z*cosf(yawRad) + increment.x*sinf(yawRad)));
 }
 Camera::~Camera()
 {

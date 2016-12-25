@@ -34,7 +34,7 @@ struct Vec3GLf {
 	}
 	static Vec3GLf toVector(GLfloat pitch, GLfloat yaw) {
 		double radPitch = pitch * DEG_TO_RAD, radYaw = yaw * DEG_TO_RAD;
-		return Vec3GLf(-cosf(radYaw)*cosf(radPitch), sinf(radPitch), sinf(radYaw)*cosf(radPitch));
+		return Vec3GLf(-sinf(radYaw)*cosf(radPitch),sinf(radPitch), cosf(radYaw)*cosf(radPitch));
 
 	}
 
