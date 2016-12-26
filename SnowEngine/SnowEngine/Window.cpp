@@ -40,9 +40,9 @@ void Window::processKeyInputs() {
 	if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
 		_renderer->getCamera()->incRelPos(Vec3GLf(0.1, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		_renderer->getCamera()->incAbsPos(Vec3GLf(0, 0.1, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0.1, 0));
 	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		_renderer->getCamera()->incAbsPos(Vec3GLf(0, -0.1, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, -0.1, 0));
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
 
