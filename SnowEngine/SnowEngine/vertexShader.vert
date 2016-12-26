@@ -1,6 +1,6 @@
 #version 400 core
 
-in vec3 position;
+in uvec3 position;
 
 uniform mat4 chunkTranslationMatrix;
 uniform mat4 translationMatrix;
@@ -12,5 +12,6 @@ out vec3 colour;
 void main()
 {
 	gl_Position = projectionMatrix * rotationMatrix * translationMatrix * chunkTranslationMatrix * vec4(position, 1.0);
-	colour = vec3(position.x/32, position.y/32, position.z/32);
+	vec3 posfloat = position;
+	colour = vec3(posfloat.x/32, posfloat.y/32, posfloat.z/32);
 }

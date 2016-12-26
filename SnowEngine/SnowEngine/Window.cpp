@@ -7,7 +7,7 @@ Window::Window(int width, int height, const char* title)
 	setWindowCallbacks();
 	glfwGetFramebufferSize(_window, &width, &height);
 	glfwMakeContextCurrent(_window);
-	glfwSwapInterval(1);
+	glfwSwapInterval(0);
 	glfwSetInputMode(_window, GLFW_STICKY_KEYS, 1);
 	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwGetCursorPos(_window, &lxpos, &lypos);
@@ -18,6 +18,7 @@ Window::Window(int width, int height, const char* title)
 }
 
 void Window::update() {
+	glClearColor(.5, 1, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	processKeyInputs();
 	_renderer->renderAll();
@@ -27,17 +28,17 @@ void Window::update() {
 
 void Window::processKeyInputs() {
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -0.5));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -0.1));
 	if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(-0.5, 0, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(-0.1, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, 0.5));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, 0.1));
 	if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0.5, 0, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0.1, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		_renderer->getCamera()->incAbsPos(Vec3GLf(0, 0.5, 0));
+		_renderer->getCamera()->incAbsPos(Vec3GLf(0, 0.1, 0));
 	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		_renderer->getCamera()->incAbsPos(Vec3GLf(0, -0.5, 0));
+		_renderer->getCamera()->incAbsPos(Vec3GLf(0, -0.1, 0));
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
 }

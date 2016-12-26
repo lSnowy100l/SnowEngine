@@ -2,8 +2,11 @@
 #include <stdio.h>
 #include "Chunk.h"
 
+const BlockData Chunk::blockData[] = {
+	BlockData(0, 0, 0, 0),
+	BlockData(125, 125, 125, 255) };
 
-void addBlock(GLfloat* data, GLint& size, GLubyte x, GLubyte y, GLubyte z) {
+void addBlock(GLubyte* data, GLint& size, GLubyte x, GLubyte y, GLubyte z) {
 	data[size++] = x;		data[size++] = y;		data[size++] = z;
 	data[size++] = x;		data[size++] = y;		data[size++] = z+1;
 	data[size++] = x;		data[size++] = y+1;		data[size++] = z+1;
@@ -72,23 +75,7 @@ Chunk::Chunk(GLuint x, GLuint y, GLuint z) : x(x), y(y), z(z)
 
 	glGenVertexArrays(1, &_vaoId);
 	glGenBuffers(1, &_vboId);
-	glBindVertexArray(_vaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, _vboId);
-
-	GLfloat* data = new GLfloat[CHUNK_SIZE_CUBE * 6 * 2 * 3 * 3];
-	GLint size = 0;
-	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
-		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
-			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
-				if (blocks[x][y][z] != 0) addBlock(data, size, x, y, z);
-			}
-		}
-	}
-
-	_vertexCount = size / 3;
-	glBufferData(GL_ARRAY_BUFFER, size * sizeof(GLfloat), data, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	delete[] data;
+	update();
 }
 
 void Chunk::insertBlock(GLubyte& x, GLubyte& y, GLubyte& z, GLubyte id) {
@@ -101,12 +88,32 @@ void Chunk::insertBlock(GLubyte& x, GLubyte& y, GLubyte& z, GLubyte id) {
 	
 }
 
+void Chunk::update() {
+	if (updated) return;
+	glBindVertexArray(_vaoId);
+	glBindBuffer(GL_ARRAY_BUFFER, _vboId);
+
+	GLubyte* data = new GLubyte[CHUNK_SIZE_CUBE * 6 * 2 * 3 * 3];
+	GLint size = 0;
+	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
+		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
+			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
+				if (blocks[x][y][z] != 0) addBlock(data, size, x, y, z);
+			}
+		}
+	}
+
+	_vertexCount = size / 3;
+	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+	glVertexAttribIPointer(0, 3, GL_UNSIGNED_BYTE, 0, NULL);
+	delete[] data;
+	updated = true;
+}
+
 std::string Chunk::getFileName()
 {
 	std::stringstream ss;
 	ss << "./" << CHUNK_FOLDER << x << "_" << y << "_" << z << ".chunk";
-
-
 	return ss.str();
 }
 
@@ -137,7 +144,7 @@ void Chunk::generateChunk() {
 		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
 			blocks[x][y] = new GLubyte[CHUNK_SIZE];
 			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
-				blocks[x][y][z] = y < 20;
+				blocks[x][y][z] = 1;
 			}
 		}
 	}

@@ -24,7 +24,9 @@ struct Vec3GLf {
 	Vec3GLf operator-() {
 		return Vec3GLf(-x, -y, -z);
 	}
-
+	bool operator==(const Vec3GLf& v) {
+		return x == v.x && y == v.y && z == v.z;
+	}
 	float length() {
 		return sqrtf(x*x + y*y + z*z);
 	}
@@ -35,7 +37,6 @@ struct Vec3GLf {
 	static Vec3GLf toVector(GLfloat pitch, GLfloat yaw) {
 		double radPitch = pitch * DEG_TO_RAD, radYaw = yaw * DEG_TO_RAD;
 		return Vec3GLf(-sinf(radYaw)*cosf(radPitch),sinf(radPitch), cosf(radYaw)*cosf(radPitch));
-
 	}
 
 };
