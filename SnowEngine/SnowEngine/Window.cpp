@@ -7,20 +7,22 @@ Window::Window(int width, int height, const char* title)
 	setWindowCallbacks();
 	glfwGetFramebufferSize(_window, &width, &height);
 	glfwMakeContextCurrent(_window);
-	glfwSwapInterval(1);
+	glfwSwapInterval(0);
 	glfwSetInputMode(_window, GLFW_STICKY_KEYS, 1);
 	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwGetCursorPos(_window, &lxpos, &lypos);
 	glfwSetWindowUserPointer(_window, this);
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
+
 	for (bool b : spec_keys) b = false;
 	for (bool b : action_spec_keys) b = false;
 
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 }
 
 void Window::update() {
+	glClearColor(.5, 1, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	processKeyInputs();
 	_renderer->renderAll();

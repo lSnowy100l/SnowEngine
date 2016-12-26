@@ -7,10 +7,11 @@
 #include "Window.h"
 #include "Chunk.h"
 #include "MasterRenderer.h"
+#include "ChunkManager.h"
 #include "common.h"
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 1280
+#define HEIGHT 720
 #define TITLE "First Window"
 
 Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
@@ -41,18 +42,28 @@ int main() {
 	glewExperimental = GL_TRUE;
 
 	Camera* camera = new Camera(WIDTH, HEIGHT, 70, 0.01, 1000);
-	camera->incAbsPos(Vec3GLf(0.0, 0.0, 0.0));
+	camera->incAbsPos(Vec3GLf(70.0, 34.0, 70.0));
 	
 	MasterRenderer* renderer = new MasterRenderer(camera);
 	ChunkRenderer* cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
 	renderer->addRenderer(cr);
 	w->associateRenderer(renderer);
+	ChunkManager* cm = new ChunkManager(cr);
 
-	int i = 0;
 	while (w->shouldClose() == 0) {
+		for (int i = -3; i <= 3; i++) {
+			for (int j = -3; j <= 3; j++) {
+				for (int k = -3; k <= 3; k++) {
+					cm->setBlockAt((GLuint)camera->getPosition().x + i, (GLuint)camera->getPosition().y + j, (GLuint)camera->getPosition().z + k, 0);
+				}
+			}
+		}
+		
+		cm->update();
 		w->update();
 	}
-	
+
+	delete cm;
 	delete w;
 	delete renderer;
 
