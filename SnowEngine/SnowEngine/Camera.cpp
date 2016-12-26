@@ -21,13 +21,18 @@ Mat4GLf Camera::getRotationMatrix() {
 	Vec3GLf back_v	(-sinf(radYaw)*cosf(radPitch), sinf(radPitch), cosf(radYaw)*cosf(radPitch));
 	
 	Mat4GLf rotationMatrix = Mat4GLf::viewRotationMatrix(right_v, back_v, up_v);
+
 	return rotationMatrix;
 }
 
 void Camera::incRelPos(Vec3GLf increment) {
 	double yawRad = _yaw*DEG_TO_RAD;
-	incAbsPos(Vec3GLf(increment.x*cosf(yawRad) - increment.z*sinf(yawRad), increment.y, increment.z*cosf(yawRad) + increment.x*sinf(yawRad)));
+	double pitchRad = _pitch*DEG_TO_RAD;
+	incAbsPos(Vec3GLf( cosf(pitchRad)*(increment.x*cosf(yawRad) - increment.z*sinf(yawRad)), increment.z*sinf(pitchRad) + increment.y, cosf(pitchRad)*(increment.z*cosf(yawRad) + increment.x*sinf(yawRad))));
+
 }
+
+
 Camera::~Camera()
 {
 }

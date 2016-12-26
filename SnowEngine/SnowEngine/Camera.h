@@ -10,6 +10,7 @@ class Camera
 private:
 	
 	Vec3GLf _position = Vec3GLf();
+	Vec3GLf _realpos = Vec3GLf();
 	Mat4GLf _projectionMatrix;
 public:
 	GLfloat _pitch = 0, _yaw = 0;
