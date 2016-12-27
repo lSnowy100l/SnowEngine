@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <inttypes.h>
 #include "Vec3GLf.h"
 #include "common.h"
 
@@ -20,6 +21,7 @@ struct BlockData {
 	BlockData(GLubyte r, GLubyte g, GLubyte b, GLubyte a) : _red(r), _green(g), _blue(b), _alpha(a) {}
 	GLubyte _red, _green, _blue, _alpha;
 };
+
 
 
 
@@ -52,3 +54,24 @@ private:
 	void getFileName(char * file_destination);
 };
 
+struct hashtable {
+	uint64_t key;
+	Chunk * chkptr;
+};
+
+class HashTable
+{
+
+private:
+	struct hashtable * ht;
+	uint64_t entry_size;
+
+public:
+	HashTable(uint64_t entry_size);
+	Chunk * getChunkByKey(uint64_t key);
+	void insertChunk(Chunk * chk);
+	~HashTable();
+
+private:
+	uint64_t computeHashOf(Chunk * chk);
+};

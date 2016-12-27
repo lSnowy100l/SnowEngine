@@ -206,3 +206,30 @@ Chunk::~Chunk()
 	}
 	delete[] blocks;
 }
+
+
+
+HashTable::HashTable(uint64_t entry_size)
+{
+	this->entry_size = entry_size;
+	ht = new hashtable[this->entry_size];
+	if (ht == nullptr) terror("Could not allocate hash table", -1);
+}
+
+void HashTable::insertChunk(Chunk * chk)
+{
+	
+	std::cout << "Hash index yields " << this->computeHashOf(chk) << std::endl;
+	//this->ht[this->computeHashOf(chk)];
+}
+
+HashTable::~HashTable()
+{
+}
+
+uint64_t HashTable::computeHashOf(Chunk * chk)
+{
+	Vec3GLf v = chk->getPosition();
+	return (((uint64_t) v.x + (uint64_t)v.y + (uint64_t)v.z) << 5) % entry_size;
+}
+

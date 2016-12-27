@@ -11,3 +11,4 @@ void terror(const char * msg, int error) {
 	getchar();
 	exit(error);
 }
+
