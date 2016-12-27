@@ -21,7 +21,14 @@ struct BlockData {
 	GLubyte _red, _green, _blue, _alpha;
 };
 
-
+struct FaceData {
+	GLbitfield xpos : 1;
+	GLbitfield xneg : 1;
+	GLbitfield ypos : 1;
+	GLbitfield yneg : 1;
+	GLbitfield zpos : 1;
+	GLbitfield zneg : 1;
+};
 
 class Chunk
 {
@@ -34,6 +41,7 @@ private:
 	GLubyte*** blocks;
 	GLuint x, y, z;
 	GLuint _vaoId, _vboId, _vertexCount;
+	FaceData*** _faceData;
 	bool updated = false;
 public:
 	Chunk(GLuint x, GLuint y, GLuint z);
@@ -50,5 +58,6 @@ private:
 	void generateChunk();
 	void insertBlock(GLubyte & x, GLubyte & y, GLubyte & z, GLubyte id);
 	void getFileName(char * file_destination);
+	void addFace(GLubyte* data, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size);
 };
 

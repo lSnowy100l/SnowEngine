@@ -7,56 +7,6 @@ const BlockData Chunk::blockData[] = {
 	BlockData(0, 0, 0, 0),
 	BlockData(125, 125, 125, 255) };
 
-void addBlock(GLubyte* data, GLint& size, GLubyte x, GLubyte y, GLubyte z) {
-	data[size++] = x;		data[size++] = y;		data[size++] = z;
-	data[size++] = x;		data[size++] = y;		data[size++] = z+1;
-	data[size++] = x;		data[size++] = y+1;		data[size++] = z+1;
-
-	data[size++] = x;		data[size++] = y;		data[size++] = z;
-	data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
-	data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
-
-	data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
-	data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
-	data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
-
-	data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z;
-	data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
-	data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
-
-	data[size++] = x;		data[size++] = y;		data[size++] = z + 1;
-	data[size++] = x;		data[size++] = y;		data[size++] = z;
-	data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
-
-	data[size++] = x;		data[size++] = y;		data[size++] = z;
-	data[size++] = x + 1;		data[size++] = y;	data[size++] = z;
-	data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
-
-	data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
-	data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
-	data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
-
-	data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
-	data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
-	data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z;
-
-	data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
-	data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z;
-	data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
-
-	data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
-	data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
-	data[size++] = x;		data[size++] = y;		data[size++] = z;
-
-	data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
-	data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
-	data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
-
-	data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
-	data[size++] = x;		data[size++] = y;		data[size++] = z + 1;
-	data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
-}
-
 Chunk::Chunk(GLuint x, GLuint y, GLuint z) : x(x), y(y), z(z)
 {
 	
@@ -91,6 +41,65 @@ void Chunk::insertBlock(GLubyte& x, GLubyte& y, GLubyte& z, GLubyte id) {
 	
 }
 
+void Chunk::addFace(GLubyte* data, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size) {
+	switch (type) {
+	case 0:
+		data[size++] = x;		data[size++] = y;		data[size++] = z;
+		data[size++] = x;		data[size++] = y;		data[size++] = z + 1;
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
+
+		data[size++] = x;		data[size++] = y;		data[size++] = z;
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
+		break;
+	case 1:
+		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
+		data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
+		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
+
+		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z;
+		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
+		data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
+		break;
+	case 2:
+		data[size++] = x;		data[size++] = y;		data[size++] = z + 1;
+		data[size++] = x;		data[size++] = y;		data[size++] = z;
+		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
+
+		data[size++] = x;		data[size++] = y;		data[size++] = z;
+		data[size++] = x + 1;		data[size++] = y;	data[size++] = z;
+		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
+		break;
+	case 3:
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
+		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
+
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
+		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
+		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z;
+		break;
+	case 4:
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
+		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z;
+		data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
+
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
+		data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
+		data[size++] = x;		data[size++] = y;		data[size++] = z;
+		break;
+	case 5:
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
+		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
+		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
+
+		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
+		data[size++] = x;		data[size++] = y;		data[size++] = z + 1;
+		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
+		break;
+	}
+}
+
 void Chunk::update() {
 	if (updated) {
 		return;
@@ -100,14 +109,36 @@ void Chunk::update() {
 	glBindVertexArray(_vaoId);
 	glBindBuffer(GL_ARRAY_BUFFER, _vboId);
 
-
 	GLubyte* data = new GLubyte[CHUNK_SIZE_CUBE * 6 * 2 * 3 * 3];
 	GLint size = 0;
 	
 	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
 		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
 			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
-				if (blocks[x][y][z] != 0) addBlock(data, size, x, y, z);
+				if (x == 0 || blocks[x - 1][y][z] == 0) {
+					//_faceData[x][y][z].ypos = 1;
+					addFace(data, 0, x, y, z, size);
+				}
+				if (x == CHUNK_SIZE_MINUS || blocks[x + 1][y][z] == 0) {
+					//_faceData[x][y][z].ypos = 1;
+					addFace(data, 1, x, y, z, size);
+				}
+				if (y == 0 || blocks[x][y - 1][z] == 0) {
+					//_faceData[x][y][z].ypos = 1;
+					addFace(data, 2, x, y, z, size);
+				}
+				if (y == CHUNK_SIZE_MINUS || blocks[x][y + 1][z] == 0) {
+					//_faceData[x][y][z].ypos = 1;
+					addFace(data, 3, x, y, z, size);
+				}
+				if (z == 0 || blocks[x][y][z - 1] == 0) {
+					//_faceData[x][y][z].ypos = 1;
+					addFace(data, 4, x, y, z, size);
+				}
+				if (z == CHUNK_SIZE_MINUS || blocks[x][y][z + 1] == 0) {
+					//_faceData[x][y][z].ypos = 1;
+					addFace(data, 5, x, y, z, size);
+				}
 			}
 		}
 	}
