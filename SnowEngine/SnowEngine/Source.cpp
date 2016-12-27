@@ -21,10 +21,7 @@ Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
 
 int main() {
 	// GLFW Libraries initialization
-	if (!glfwInit()) {
-		fprintf(stderr, "Error: %_s\n", "Failed to initialize GLFW library.");
-		return 1;
-	}
+	if (!glfwInit()) terror("Failed to initialize GLFW library", -1);
 
 	//Show version
 
@@ -34,10 +31,7 @@ int main() {
 
 	// GLEW Libraries initialization
 	GLenum err = glewInit();
-	if (err != GLEW_OK) {
-		fprintf(stderr, "Error: %_s\n", glewGetErrorString(err));
-		return 2;
-	}
+	if (err != GLEW_OK) terror((char *)glewGetErrorString(err), 2);
 
 	glewExperimental = GL_TRUE;
 
@@ -49,15 +43,21 @@ int main() {
 	renderer->addRenderer(cr);
 	w->associateRenderer(renderer);
 	ChunkManager* cm = new ChunkManager(cr);
+	
+	//Game loop
 
+	
 	while (w->shouldClose() == 0) {
+		
 		for (int i = -3; i <= 3; i++) {
 			for (int j = -3; j <= 3; j++) {
 				for (int k = -3; k <= 3; k++) {
 					cm->setBlockAt((GLuint)camera->getPosition().x + i, (GLuint)camera->getPosition().y + j, (GLuint)camera->getPosition().z + k, 0);
+
 				}
 			}
 		}
+		//fprintf(stdout, "%u\n", (unsigned int)renderer->getFps());
 		
 		cm->update();
 		w->update();

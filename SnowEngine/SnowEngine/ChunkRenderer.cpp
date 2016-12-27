@@ -19,12 +19,13 @@ void ChunkRenderer::render() {
 	glUniformMatrix4fv(translationMatrixLoc, 1, GL_FALSE, &_renderer->getCamera()->getTranslationMatrix().data[0]);
 	glUniformMatrix4fv(rotationMatrixLoc, 1, GL_FALSE, &_renderer->getCamera()->getRotationMatrix().data[0]);
 	glUniformMatrix4fv(projectionMatrixLoc, 1, GL_FALSE, &_renderer->getCamera()->getProjectionMatrix().data[0]);
-	while (first_Chunk != nullptr) {
+	while (first_Chunk != nullptr) {	
 		renderChunk(first_Chunk->chunk);
 		// Empty render list
 		ChunkNode* aux = first_Chunk;
 		first_Chunk = first_Chunk->next;
 		delete aux;
+		
 	}
 	glUseProgram(NULL);
 }
