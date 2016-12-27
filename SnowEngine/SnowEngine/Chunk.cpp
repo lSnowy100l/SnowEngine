@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <Windows.h>
 #include "Chunk.h"
 
 const BlockData Chunk::blockData[] = {
@@ -59,6 +60,8 @@ void addBlock(GLubyte* data, GLint& size, GLubyte x, GLubyte y, GLubyte z) {
 Chunk::Chunk(GLuint x, GLuint y, GLuint z) : x(x), y(y), z(z)
 {
 	
+	char file_source[MAX_PATH];
+	getFileName(file_source);
 	blocks = new GLubyte**[CHUNK_SIZE];
 	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
 		blocks[x] = new GLubyte*[CHUNK_SIZE];
@@ -67,7 +70,7 @@ Chunk::Chunk(GLuint x, GLuint y, GLuint z) : x(x), y(y), z(z)
 		}
 	}
 
-	FILE * ptr = fopen(&getFileName()[0], "rb");
+	FILE * ptr = fopen(file_source, "rb");
 	if (ptr == nullptr)
 		generateChunk();
 	else
@@ -89,12 +92,18 @@ void Chunk::insertBlock(GLubyte& x, GLubyte& y, GLubyte& z, GLubyte id) {
 }
 
 void Chunk::update() {
-	if (updated) return;
+	if (updated) {
+		return;
+	}
+	
+	
 	glBindVertexArray(_vaoId);
 	glBindBuffer(GL_ARRAY_BUFFER, _vboId);
 
+
 	GLubyte* data = new GLubyte[CHUNK_SIZE_CUBE * 6 * 2 * 3 * 3];
 	GLint size = 0;
+	
 	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
 		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
 			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
@@ -102,7 +111,7 @@ void Chunk::update() {
 			}
 		}
 	}
-
+	
 	_vertexCount = size / 3;
 	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	glVertexAttribIPointer(0, 3, GL_UNSIGNED_BYTE, 0, NULL);
@@ -110,11 +119,10 @@ void Chunk::update() {
 	updated = true;
 }
 
-std::string Chunk::getFileName()
+void Chunk::getFileName(char * file_destination)
 {
-	std::stringstream ss;
-	ss << "./" << CHUNK_FOLDER << x << "_" << y << "_" << z << ".chunk";
-	return ss.str();
+	file_destination[0] = '\0';
+	sprintf(file_destination, "%s%d_%d_%d.chk", data_directory, x, y, z);
 }
 
 void Chunk::loadFromFile(FILE* ptr) {
@@ -176,7 +184,9 @@ void Chunk::saveToFile()
 	fcn.amount = amount;
 	fcn.block_id = last_id;
 	buffers.push_back(fcn);
-	FILE * ptr = fopen(&getFileName()[0], "wb");
+	char file_pointer[MAX_PATH];
+	getFileName(file_pointer);
+	FILE * ptr = fopen(file_pointer, "wb");
 
 	for (FileChunkNode buffer : buffers)
 		fwrite(&buffer, sizeof(FileChunkNode), 1, ptr);

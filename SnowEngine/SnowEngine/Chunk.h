@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include "Vec3GLf.h"
+#include "common.h"
 
 #define BLOCK_COUNT 2
 #define CHUNK_POW 5
@@ -48,6 +49,6 @@ private:
 	void loadFromFile(FILE* ptr);
 	void generateChunk();
 	void insertBlock(GLubyte & x, GLubyte & y, GLubyte & z, GLubyte id);
-	std::string getFileName();
+	void getFileName(char * file_destination);
 };
 
