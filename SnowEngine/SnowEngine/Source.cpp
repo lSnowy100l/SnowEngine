@@ -48,8 +48,27 @@ int main() {
 	w->associateRenderer(renderer);
 	ChunkManager* cm = new ChunkManager(cr);
 	
-	//Game loop
+	// Create hash table and memory pool
+	memory_pool * mp = new memory_pool();
 
+	HashTable * ht = new HashTable(51);
+	ht->attachMemoryPool(mp);
+	/*
+	for (int i = 0; i < 12; i++) {
+		Chunk chk(0, i, 0);
+		ht->insertChunk(&chk);
+		//mp->showWhatYouGot(i);
+	}
+	
+	
+
+	Vec3GLf v(0, 1, 0);
+	Chunk * chk = ht->getChunkByKey(v);
+	std::cout << "done " << chk->getPosition() << std::endl;
+	*/
+
+
+	//Game loop
 	
 	while (w->shouldClose() == 0) {
 		
@@ -70,7 +89,9 @@ int main() {
 	delete cm;
 	delete w;
 	delete renderer;
+	delete mp;
 
 	glfwTerminate();
+
 	return 0;
 }

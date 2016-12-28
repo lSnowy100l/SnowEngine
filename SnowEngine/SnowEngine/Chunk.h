@@ -10,6 +10,8 @@
 
 #define BLOCK_COUNT 2
 #define CHUNK_POW 5
+#define MAX_MEM_POOLS 256
+#define POOL_SIZE 1024*1024*256
 #define CHUNK_FOLDER "chunk_data/"
 
 struct FileChunkNode {
@@ -45,6 +47,8 @@ public:
 	inline bool setBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte id) { if (blocks[x][y][z] != id) { blocks[x][y][z] = id; updated = false; return updated; } }
 	inline GLuint getVaoId() { return _vaoId; }
 	inline GLuint getVertexCount() { return _vertexCount; }
+	bool isEqualTo(Chunk * chk);
+	bool isEqualTo(Vec3GLf * v);
 	void update();
 	~Chunk();
 private:
@@ -54,24 +58,45 @@ private:
 	void getFileName(char * file_destination);
 };
 
+class memory_pool {
+
+private:
+	//TODO add stack of recently free'd positions
+	char ** mem_pool;
+	uint64_t * base;
+	uint64_t current_pool;
+public:
+	memory_pool();
+	void * request_bytes(uint64_t n_bytes);
+	void showWhatYouGot(int k);
+	~memory_pool();
+};
+
+typedef struct bucket {
+	Chunk * chk;
+	struct bucket * next;
+} Bucket;
+
 struct hashtable {
-	uint64_t key;
-	Chunk * chkptr;
+	Bucket * bucket_ptr;
 };
 
 class HashTable
 {
 
 private:
-	struct hashtable * ht;
+	struct hashtable * ht; // struct hashtable ht[size_entry]
 	uint64_t entry_size;
+	memory_pool * mp;
 
 public:
 	HashTable(uint64_t entry_size);
-	Chunk * getChunkByKey(uint64_t key);
+	void attachMemoryPool(memory_pool * mp);
+	Chunk * getChunkByKey(Vec3GLf key);
 	void insertChunk(Chunk * chk);
 	~HashTable();
 
 private:
-	uint64_t computeHashOf(Chunk * chk);
+	uint64_t computeHashOf(Vec3GLf key);
 };
+
