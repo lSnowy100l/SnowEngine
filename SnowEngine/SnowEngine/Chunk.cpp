@@ -222,12 +222,11 @@ Chunk::~Chunk()
 
 
 
-HashTable::HashTable(uint64_t entry_size)
+HashTable::HashTable()
 {
-	this->entry_size = entry_size;
-	ht = new hashtable[this->entry_size];
+	ht = new hashtable[ENTRY_SIZE];
 	if (ht == nullptr) terror("Could not allocate hash table", -1);
-	for (int i = 0; i < this->entry_size; i++) {
+	for (int i = 0; i < ENTRY_SIZE; i++) {
 		ht[i].bucket_ptr = nullptr;
 	}
 }
@@ -237,18 +236,18 @@ void HashTable::attachMemoryPool(memory_pool * mp)
 	this->mp = mp;
 }
 
+Bucket * HashTable::getBucketAt(int index)
+{
+	return this->ht[index].bucket_ptr;
+}
+
 Chunk * HashTable::getChunkByKey(Vec3GLf key)
 {
 	uint64_t hash = this->computeHashOf(key);
-	std::cout << "using " << hash << std::endl;
-	Bucket * ptr = this->ht[hash].bucket_ptr;
-
-	std::cout << "read dir " << ptr << std::endl;
-
-	std::cout << ptr->chk->getPosition() << std::endl;
+	Bucket * ptr = this->getBucketAt(hash);
 
 	while (ptr != nullptr) {
-		if (ptr->chk->isEqualTo(&key) == true) return ptr->chk;
+		if (ptr->chk != nullptr && ptr->chk->isEqualTo(&key) == true) return ptr->chk;
 		ptr = ptr->next;
 	}
 	return nullptr;
@@ -260,11 +259,8 @@ void HashTable::insertChunk(Chunk * chk)
 
 	uint64_t hash = this->computeHashOf(chk->getPosition());
 
-	std::cout << "inserted hash " << hash << " at " << chk->getPosition()<< std::endl;
-
 	Bucket * b = (Bucket *) this->mp->request_bytes((uint64_t) sizeof(Bucket));
 
-	std::cout << "Returned dir : " << b << std::endl;
 
 	b->chk = chk;
 	b->next = nullptr;
@@ -272,9 +268,7 @@ void HashTable::insertChunk(Chunk * chk)
 	if (this->ht[hash].bucket_ptr != nullptr) {
 		b->next = this->ht[hash].bucket_ptr;
 	}
-	std::cout << "heaps " << this->ht[hash].bucket_ptr << " :: " << b << std::endl;
 	this->ht[hash].bucket_ptr = b;
-	std::cout << "heaps " << this->ht[hash].bucket_ptr << " :: " << b << std::endl;
 	
 }
 
@@ -284,7 +278,7 @@ HashTable::~HashTable()
 
 uint64_t HashTable::computeHashOf(Vec3GLf key)
 {
-	return (((uint64_t) key.x + (uint64_t) key.y + (uint64_t) key.z) << 5) % entry_size;
+	return (((uint64_t) key.x % MODULUS) + ((uint64_t) key.y % MODULUS)*MODULUS + ((uint64_t) key.z % MODULUS)*MODULUS*MODULUS);
 }
 
 memory_pool::memory_pool()

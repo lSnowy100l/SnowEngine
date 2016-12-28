@@ -4,12 +4,13 @@
 #include "MasterRenderer.h"
 #include "common.h"
 
+
 class ChunkManager
 {
 private:
 	ChunkRenderer* _renderer;
-	std::vector<Chunk*> _chunks;
-	Chunk* last_access;
+	HashTable * ht;
+	memory_pool * mp;
 public:
 	ChunkManager(ChunkRenderer* renderer);
 	void update();

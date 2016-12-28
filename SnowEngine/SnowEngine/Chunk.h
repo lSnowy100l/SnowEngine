@@ -12,6 +12,8 @@
 #define CHUNK_POW 5
 #define MAX_MEM_POOLS 256
 #define POOL_SIZE 1024*1024*256
+#define MODULUS 8
+#define ENTRY_SIZE (MODULUS*MODULUS*MODULUS)
 #define CHUNK_FOLDER "chunk_data/"
 
 struct FileChunkNode {
@@ -86,12 +88,12 @@ class HashTable
 
 private:
 	struct hashtable * ht; // struct hashtable ht[size_entry]
-	uint64_t entry_size;
 	memory_pool * mp;
 
 public:
-	HashTable(uint64_t entry_size);
+	HashTable();
 	void attachMemoryPool(memory_pool * mp);
+	Bucket * getBucketAt(int index); //SOLO PARA SUSTITUIR un ITERADOR POR KEYS
 	Chunk * getChunkByKey(Vec3GLf key);
 	void insertChunk(Chunk * chk);
 	~HashTable();
