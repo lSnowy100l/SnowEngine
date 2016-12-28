@@ -109,12 +109,13 @@ void Chunk::update() {
 	glBindVertexArray(_vaoId);
 	glBindBuffer(GL_ARRAY_BUFFER, _vboId);
 
-	GLubyte* data = new GLubyte[CHUNK_SIZE_CUBE * 6 * 2 * 3 * 3];
+	GLubyte* data = new GLubyte[CHUNK_SIZE_CUBE * 6 * 3 * 3];
 	GLint size = 0;
 	
 	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
 		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
 			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
+				if (blocks[x][y][z] == 0) continue;
 				if (x == 0 || blocks[x - 1][y][z] == 0) {
 					//_faceData[x][y][z].ypos = 1;
 					addFace(data, 0, x, y, z, size);
@@ -183,7 +184,7 @@ void Chunk::generateChunk() {
 		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
 			blocks[x][y] = new GLubyte[CHUNK_SIZE];
 			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
-				blocks[x][y][z] = 1;
+				blocks[x][y][z] = rand() % 2;
 			}
 		}
 	}
