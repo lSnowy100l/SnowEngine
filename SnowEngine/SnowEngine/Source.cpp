@@ -53,11 +53,13 @@ int main() {
 
 	HashTable * ht = new HashTable(51);
 	ht->attachMemoryPool(mp);
-	/*
+	
+	Chunk ** chks = (Chunk **) malloc(12*sizeof(Chunk*));
+
 	for (int i = 0; i < 12; i++) {
-		Chunk chk(0, i, 0);
-		ht->insertChunk(&chk);
-		//mp->showWhatYouGot(i);
+		chks[i] = new Chunk(0, i, 0);
+		ht->insertChunk(chks[i]);
+		mp->showWhatYouGot(i);
 	}
 	
 	
@@ -65,7 +67,7 @@ int main() {
 	Vec3GLf v(0, 1, 0);
 	Chunk * chk = ht->getChunkByKey(v);
 	std::cout << "done " << chk->getPosition() << std::endl;
-	*/
+	
 
 
 	//Game loop
