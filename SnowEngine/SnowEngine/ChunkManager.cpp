@@ -8,9 +8,9 @@ ChunkManager::ChunkManager(ChunkRenderer* renderer) : _renderer(renderer)
 
 
 	//Creating random chunks
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			for (int k = 0; k < 5; k++)
+	for (int i = 0; i < 1; i++) {
+		for (int j = 0; j < 1; j++) {
+			for (int k = 0; k < 1; k++)
 				_chunks.push_back(new Chunk(i, j, k));
 		}
 	}

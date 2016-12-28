@@ -46,6 +46,14 @@ int main() {
 	
 	//Game loop
 	while (w->shouldClose() == 0) {
+		for (int i = -2; i < 3; i++) {
+			for (int j = -2; j < 3; j++) {
+				for (int k = -2; k < 3; k++) {
+					cm->setBlockAt(camera->getPosition().x + i, camera->getPosition().y + j, camera->getPosition().z + k, 0);
+				}
+			}
+		}
+		
 		cm->update();
 		w->update();
 	}
