@@ -32,6 +32,7 @@ void ChunkRenderer::render() {
 
 void ChunkRenderer::getAttribLocations() {
 	glBindAttribLocation(_programId, 0, "position");
+	glBindAttribLocation(_programId, 1, "ambientOcclusion");
 }
 
 void ChunkRenderer::getUniformLocations() {
@@ -45,7 +46,9 @@ void ChunkRenderer::renderChunk(Chunk* chunk) {
 	glUniformMatrix4fv(chunkTranslationMatrixLoc, 1, GL_FALSE, &Mat4GLf::translationMatrix(Vec3GLf(chunk->getPosition().x*32, chunk->getPosition().y * 32, chunk->getPosition().z * 32)).data[0]);
 	glBindVertexArray(chunk->getVaoId());
 	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
 	glDrawArrays(GL_TRIANGLES, 0, chunk->getVertexCount());
+	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(NULL);
 }

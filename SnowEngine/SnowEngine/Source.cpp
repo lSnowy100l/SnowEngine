@@ -45,19 +45,14 @@ int main() {
 	ChunkManager* cm = new ChunkManager(cr);
 	
 	//Game loop
-
-	
 	while (w->shouldClose() == 0) {
-		
-		for (int i = -3; i <= 3; i++) {
-			for (int j = -3; j <= 3; j++) {
-				for (int k = -3; k <= 3; k++) {
-					cm->setBlockAt((GLuint)camera->getPosition().x + i, (GLuint)camera->getPosition().y + j, (GLuint)camera->getPosition().z + k, 0);
-
+		for (int i = -2; i < 3; i++) {
+			for (int j = -2; j < 3; j++) {
+				for (int k = -2; k < 3; k++) {
+					cm->setBlockAt(camera->getPosition().x + i, camera->getPosition().y + j, camera->getPosition().z + k, 0);
 				}
 			}
 		}
-		//fprintf(stdout, "%u\n", (unsigned int)renderer->getFps());
 		
 		cm->update();
 		w->update();
