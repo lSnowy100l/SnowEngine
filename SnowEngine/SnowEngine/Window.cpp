@@ -34,28 +34,33 @@ void Window::processKeyInputs() {
 
 	
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -0.1));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -this->current_speed));
 	if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(-0.1, 0, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(-this->current_speed, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, 0.1));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, this->current_speed));
 	if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0.1, 0, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(this->current_speed, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0.1, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, this->current_speed, 0));
 	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, -0.1, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, -this->current_speed, 0));
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
 
 	if (glfwGetKey(_window, GLFW_KEY_X) == GLFW_PRESS) spec_keys[MY_X_KEY] = true;
 	if (glfwGetKey(_window, GLFW_KEY_X) == GLFW_RELEASE && spec_keys[MY_X_KEY]) handle_key_actions_after_release(MY_X_KEY);
 
+	if (glfwGetKey(_window, GLFW_KEY_TAB) == GLFW_PRESS) spec_keys[MY_TAB_KEY] = true;
+	if (glfwGetKey(_window, GLFW_KEY_TAB) == GLFW_RELEASE && spec_keys[MY_TAB_KEY]) handle_key_actions_after_release(MY_TAB_KEY);
+
 }
 
 void Window::handle_key_actions_after_release(GLuint key) {
 	switch (key) {
 	case MY_X_KEY: if (action_spec_keys[MY_X_KEY]) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	case MY_TAB_KEY: if (action_spec_keys[MY_TAB_KEY]) this->current_speed = CAM_SPEED_NORM; else this->current_speed = CAM_SPEED_FAST;
 		break;
 	}
 	spec_keys[key] = false;

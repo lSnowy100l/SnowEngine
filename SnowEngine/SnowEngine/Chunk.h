@@ -15,6 +15,7 @@
 #define MODULUS 8
 #define ENTRY_SIZE (MODULUS*MODULUS*MODULUS)
 #define CHUNK_FOLDER "chunk_data/"
+#define VBO_COUNT 2
 
 struct FileChunkNode {
 	GLubyte block_id;
@@ -26,7 +27,14 @@ struct BlockData {
 	GLubyte _red, _green, _blue, _alpha;
 };
 
-
+struct FaceData {
+	GLbitfield xpos : 1;
+	GLbitfield xneg : 1;
+	GLbitfield ypos : 1;
+	GLbitfield yneg : 1;
+	GLbitfield zpos : 1;
+	GLbitfield zneg : 1;
+};
 
 
 class Chunk
@@ -39,12 +47,13 @@ public:
 private:
 	GLubyte*** blocks;
 	GLuint x, y, z;
-	GLuint _vaoId, _vboId, _vertexCount;
+	GLuint _vaoId, _vboId[VBO_COUNT], _vertexCount;
+	FaceData*** _faceData;
 	bool updated = false;
 public:
 	Chunk(GLuint x, GLuint y, GLuint z);
 	inline Vec3GLf getPosition() { return Vec3GLf(x, y, z); }
-	inline GLubyte getBlock(GLubyte x, GLubyte y, GLubyte z) { return blocks[x][y][z]; }
+	inline GLubyte getBlock(GLubyte x, GLubyte y, GLubyte z) { return x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE ? blocks[x][y][z] : 0; }
 	void saveToFile();
 	inline bool setBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte id) { if (blocks[x][y][z] != id) { blocks[x][y][z] = id; updated = false; return updated; } }
 	inline GLuint getVaoId() { return _vaoId; }
@@ -58,6 +67,7 @@ private:
 	void generateChunk();
 	void insertBlock(GLubyte & x, GLubyte & y, GLubyte & z, GLubyte id);
 	void getFileName(char * file_destination);
+	void addFace(GLubyte* data, GLfloat* ambientData, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& aoSize);
 };
 
 class memory_pool {

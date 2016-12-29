@@ -1,6 +1,7 @@
 #version 400 core
 
 in uvec3 position;
+in float ambientOcclusion;
 
 uniform mat4 chunkTranslationMatrix;
 uniform mat4 translationMatrix;
@@ -13,5 +14,5 @@ void main()
 {
 	gl_Position = projectionMatrix * rotationMatrix * translationMatrix * chunkTranslationMatrix * vec4(position, 1.0);
 	vec3 posfloat = position;
-	colour = vec3(posfloat.x/32, posfloat.y/32, posfloat.z/32);
+	colour = vec3(posfloat.x/32, posfloat.y/32, posfloat.z/32) * clamp(ambientOcclusion, 0.4, 1.0);
 }

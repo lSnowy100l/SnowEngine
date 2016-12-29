@@ -35,7 +35,6 @@ void Camera::incRelPos(Vec3GLf increment) {
 	//double absx = cosf(pitchRad)*(advance_x) + sinf(pitchRad)*(advance_x);
 	double absx = advance_x;
 	double absy = increment.z*sinf(pitchRad) + increment.y; //y is incremented in Z because key W increases Z
-	//double absz = cosf(pitchRad)*(advance_z) + sinf(pitchRad)*(advance_z);
 	double absz = advance_z;
 
 	incAbsPos(Vec3GLf(absx, absy, absz));
