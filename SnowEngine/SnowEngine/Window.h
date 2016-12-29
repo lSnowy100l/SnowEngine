@@ -8,8 +8,8 @@
 #define SENSIBILITY_X 0.2
 #define SENSIBILITY_Y 0.3
 #define N_PR_KEYS 3
-#define CAM_SPEED_NORM 5
-#define CAM_SPEED_FAST 20
+#define CAM_SPEED_NORM 10
+#define CAM_SPEED_FAST 50
 
 //Special keys defines
 #define MY_X_KEY 0

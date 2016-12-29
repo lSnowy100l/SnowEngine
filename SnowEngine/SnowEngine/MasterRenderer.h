@@ -8,6 +8,7 @@
 #include "Vec3GLf.h"
 #include "Chunk.h"
 #include "Camera.h"
+#include "GUI.h"
 
 class Renderer;
 
@@ -59,5 +60,16 @@ public:
 	void render();
 	void addToRenderList(Chunk* chunk);
 	~ChunkRenderer();
+};
+
+class GUIRenderer : public Renderer {
+private:
+	std::vector<GUI*> gui_list;
+public:
+	GUIRenderer(MasterRenderer* renderer, const char* vertexShaderFilePath, const char* fragmentShaderFilePath);
+	void getUniformLocations();
+	void getAttribLocations();
+	void addGUI(GUI* gui);
+	void render();
 };
 

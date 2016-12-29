@@ -40,18 +40,20 @@ int main() {
 
 	
 	Camera* camera = new Camera(WIDTH, HEIGHT, 70, 0.01, 1000);
-	camera->incAbsPos(Vec3GLf(70.0, 34.0, 70.0));
+	camera->incAbsPos(Vec3GLf(0.0, 0.0, 0.0));
 	
 	MasterRenderer* renderer = new MasterRenderer(camera);
-	ChunkRenderer* cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
+	ChunkRenderer* cr = new ChunkRenderer(renderer, "chunkVertexShader.vert", "chunkFragmentShader.frag");
+	GUIRenderer* gr = new GUIRenderer(renderer, "guiVertexShader.vert", "guiFragmentShader.frag");
 	renderer->addRenderer(cr);
+	renderer->addRenderer(gr);
+	gr->addGUI(new GUI());
 	w->associateRenderer(renderer);
 	ChunkManager* cm = new ChunkManager(cr);
 	
-	
-	
 	//Game loop
 	while (w->shouldClose() == 0) {
+		/*
 		for (int i = -2; i < 3; i++) {
 			for (int j = -2; j < 3; j++) {
 				for (int k = -2; k < 3; k++) {
@@ -59,7 +61,7 @@ int main() {
 				}
 			}
 		}
-		
+		*/
 		cm->update();
 		w->update();
 	}

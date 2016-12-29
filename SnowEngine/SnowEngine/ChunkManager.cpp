@@ -12,8 +12,8 @@ ChunkManager::ChunkManager(ChunkRenderer* renderer) : _renderer(renderer)
 	ht->attachMemoryPool(mp);
 
 	//Creating random chunks
-	for (int i = 0; i < 1; i++) {
-		for (int j = 0; j < 1; j++)
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++)
 			ht->insertChunk(new Chunk(i, 0, j));
 	}
 
@@ -58,5 +58,16 @@ Chunk* ChunkManager::getChunk(GLuint x, GLuint y, GLuint z) {
 
 ChunkManager::~ChunkManager()
 {
+	Bucket* b;
+	Chunk* c;
+	for (int i = 0; i<ENTRY_SIZE; i++) {
+		b = this->ht->getBucketAt(i);
+		do {
+			if (b != nullptr) {
+				b->chk->saveToFile();
+				b = b->next;
+			}
+		} while (b != nullptr);
+	}
 	delete this->mp;
 }
