@@ -3,13 +3,12 @@
 #include <Windows.h>
 #include "Chunk.h"
 
+
 const BlockData Chunk::blockData[] = {
 	BlockData(0, 0, 0, 0),
 	BlockData(125, 125, 125, 255) };
 
-Chunk::Chunk(GLuint x, GLuint y, GLuint z) : x(x), y(y), z(z)
-{
-	
+Chunk::Chunk(GLuint x, GLuint y, GLuint z) : x(x), y(y), z(z) {
 	char file_source[MAX_PATH];
 	getFileName(file_source);
 	blocks = new GLubyte**[CHUNK_SIZE];
@@ -38,7 +37,16 @@ void Chunk::insertBlock(GLubyte& x, GLubyte& y, GLubyte& z, GLubyte id) {
 		y = (y + 1) & CHUNK_SIZE_MINUS;
 		if (y == 0) x = (x + 1) & CHUNK_SIZE_MINUS;
 	}
-	
+}
+
+bool Chunk::isEqualTo(Chunk * chk) {
+	if (chk->x == this->x && chk->y == this->y && chk->z == this->z) return true;
+	return false;
+}
+
+bool Chunk::isEqualTo(Vec3GLf * v) {
+	if (v->x == this->x && v->y == this->y && v->z == this->z) return true;
+	return false;
 }
 
 void Chunk::addFace(GLubyte* data, GLfloat* ambientData, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& aoSize) {
@@ -291,4 +299,111 @@ Chunk::~Chunk()
 		delete[] blocks[x];
 	}
 	delete[] blocks;
+}
+
+
+
+HashTable::HashTable()
+{
+	ht = new hashtable[ENTRY_SIZE];
+	if (ht == nullptr) terror("Could not allocate hash table", -1);
+	for (int i = 0; i < ENTRY_SIZE; i++) {
+		ht[i].bucket_ptr = nullptr;
+	}
+}
+
+void HashTable::attachMemoryPool(memory_pool * mp)
+{
+	this->mp = mp;
+}
+
+Bucket * HashTable::getBucketAt(int index)
+{
+	return this->ht[index].bucket_ptr;
+}
+
+Chunk * HashTable::getChunkByKey(Vec3GLf key)
+{
+	uint64_t hash = this->computeHashOf(key);
+	Bucket * ptr = this->getBucketAt(hash);
+
+	while (ptr != nullptr) {
+		if (ptr->chk != nullptr && ptr->chk->isEqualTo(&key) == true) return ptr->chk;
+		ptr = ptr->next;
+	}
+	return nullptr;
+}
+
+
+void HashTable::insertChunk(Chunk * chk)
+{
+
+	uint64_t hash = this->computeHashOf(chk->getPosition());
+
+	Bucket * b = (Bucket *) this->mp->request_bytes((uint64_t) sizeof(Bucket));
+
+
+	b->chk = chk;
+	b->next = nullptr;
+
+	if (this->ht[hash].bucket_ptr != nullptr) {
+		b->next = this->ht[hash].bucket_ptr;
+	}
+	this->ht[hash].bucket_ptr = b;
+	
+}
+
+HashTable::~HashTable()
+{
+}
+
+uint64_t HashTable::computeHashOf(Vec3GLf key)
+{
+	return (((uint64_t) key.x % MODULUS) + ((uint64_t) key.y % MODULUS)*MODULUS + ((uint64_t) key.z % MODULUS)*MODULUS*MODULUS);
+}
+
+memory_pool::memory_pool()
+{
+	this->current_pool = 0;
+	this->mem_pool = (char **) malloc(MAX_MEM_POOLS * sizeof(char *));
+	this->base = (uint64_t *) malloc(MAX_MEM_POOLS * sizeof(uint64_t));
+	this->base[0] = 0;
+	if (this->mem_pool == nullptr) terror("Could not allocate memory pools", -1);
+	this->mem_pool[0] = (char *)malloc(POOL_SIZE * sizeof(char));
+	if (this->mem_pool[0] == nullptr) terror("Could not allocate initial memory pool", -1);
+}
+
+void * memory_pool::request_bytes(uint64_t n_bytes)
+{
+	void * ptr;
+	if (this->base[this->current_pool] + n_bytes >= POOL_SIZE) {
+		this->current_pool++;
+		this->mem_pool[this->current_pool] = (char *)malloc(POOL_SIZE * sizeof(char));
+		if (this->mem_pool[this->current_pool] == nullptr) terror("Could not allocate memory pool", -1);
+		this->base[this->current_pool] = 0;
+	}
+	
+	ptr = &this->mem_pool[this->current_pool][0] + this->base[this->current_pool];
+	this->base[this->current_pool] = this->base[this->current_pool] + n_bytes;
+	
+	return ptr;
+}
+
+void memory_pool::showWhatYouGot(int k)
+{
+	Bucket * b;
+	for (int i = 0; i <= k; i++) {
+		b = (Bucket *) (this->mem_pool[0] + i*sizeof(Bucket));
+		std::cout << "gona read " << b << std::endl;
+		std::cout << b->chk->getPosition() << std::endl;
+	}
+}
+
+memory_pool::~memory_pool()
+{
+	for (int i = 0; i <= this->current_pool; i++) {
+		free(this->mem_pool[i]);
+	}
+	free(this->mem_pool);
+	free(this->base);
 }

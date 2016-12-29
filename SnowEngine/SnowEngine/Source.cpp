@@ -20,6 +20,9 @@ Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
 }
 
 int main() {
+	
+
+	
 	// GLFW Libraries initialization
 	if (!glfwInit()) terror("Failed to initialize GLFW library", -1);
 
@@ -35,6 +38,7 @@ int main() {
 
 	glewExperimental = GL_TRUE;
 
+	
 	Camera* camera = new Camera(WIDTH, HEIGHT, 70, 0.01, 1000);
 	camera->incAbsPos(Vec3GLf(70.0, 34.0, 70.0));
 	
@@ -43,6 +47,8 @@ int main() {
 	renderer->addRenderer(cr);
 	w->associateRenderer(renderer);
 	ChunkManager* cm = new ChunkManager(cr);
+	
+	
 	
 	//Game loop
 	while (w->shouldClose() == 0) {
@@ -63,5 +69,6 @@ int main() {
 	delete renderer;
 
 	glfwTerminate();
+
 	return 0;
 }

@@ -6,14 +6,17 @@ ChunkManager::ChunkManager(ChunkRenderer* renderer) : _renderer(renderer)
 	//Checking if the data folder exists, otherwise create it
 	if (CreateDirectory(data_directory, NULL) == ERROR_PATH_NOT_FOUND) terror("Could not create/find data folder", -1);
 
+	// Create hash table and memory pool
+	mp = new memory_pool();
+	ht = new HashTable();
+	ht->attachMemoryPool(mp);
 
 	//Creating random chunks
 	for (int i = 0; i < 1; i++) {
-		for (int j = 0; j < 1; j++) {
-			for (int k = 0; k < 1; k++)
-				_chunks.push_back(new Chunk(i, j, k));
-		}
+		for (int j = 0; j < 1; j++)
+			ht->insertChunk(new Chunk(i, 0, j))
 	}
+
 }
 
 GLubyte ChunkManager::getBlockAt(GLuint x, GLuint y, GLuint z) {
@@ -23,41 +26,37 @@ GLubyte ChunkManager::getBlockAt(GLuint x, GLuint y, GLuint z) {
 
 void ChunkManager::setBlockAt(GLuint x, GLuint y, GLuint z, GLubyte type) {
 	Chunk* c;
-	if (last_access != nullptr && Vec3GLf(x, y, z) == last_access->getPosition()) c = last_access;
-	else {
-		c = getChunk(x / Chunk::CHUNK_SIZE, y / Chunk::CHUNK_SIZE, z / Chunk::CHUNK_SIZE);
-		if (c != nullptr) last_access = c;
-	}
+
+	c = ht->getChunkByKey(Vec3GLf(x / Chunk::CHUNK_SIZE, y / Chunk::CHUNK_SIZE, z / Chunk::CHUNK_SIZE));
 	
-	if (c != nullptr) {
-		c->setBlock(x % Chunk::CHUNK_SIZE, y % Chunk::CHUNK_SIZE, z % Chunk::CHUNK_SIZE, type);
-	}
+	if(c != nullptr) c->setBlock(x % Chunk::CHUNK_SIZE, y % Chunk::CHUNK_SIZE, z % Chunk::CHUNK_SIZE, type);
 }
 
 
 void ChunkManager::update() {
 	
-	for (Chunk* c : _chunks) {
-		c->update();
-		_renderer->addToRenderList(c);
+	Chunk * c;
+	Bucket * b;
+	for(int i=0; i<ENTRY_SIZE; i++){
+		b = this->ht->getBucketAt(i);
+		do {
+			if (b != nullptr) {
+				c = b->chk;
+				c->update();
+				_renderer->addToRenderList(c);
+				b = b->next;
+			}
+		} while (b != nullptr);
 	}
 }
 
-Chunk* ChunkManager::getChunk(GLuint x, GLuint y, GLuint z) {
-	bool found = false;
-	size_t i = 0;
-	
-	while (!found && i < _chunks.size()) {
-		found = _chunks[i]->getPosition() == Vec3GLf(x, y, z);
-		if (!found) i++;
-	}
-	
 
-	return found ? _chunks[i] : nullptr;
+Chunk* ChunkManager::getChunk(GLuint x, GLuint y, GLuint z) {
+
+	return ht->getChunkByKey(Vec3GLf(x, y, z));
 }
 
 ChunkManager::~ChunkManager()
 {
-	for (Chunk* c : _chunks)
-		delete c;
+	delete this->mp;
 }

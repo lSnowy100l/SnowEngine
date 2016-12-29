@@ -4,11 +4,16 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <inttypes.h>
 #include "Vec3GLf.h"
 #include "common.h"
 
 #define BLOCK_COUNT 2
 #define CHUNK_POW 5
+#define MAX_MEM_POOLS 256
+#define POOL_SIZE 1024*1024*256
+#define MODULUS 8
+#define ENTRY_SIZE (MODULUS*MODULUS*MODULUS)
 #define CHUNK_FOLDER "chunk_data/"
 #define VBO_COUNT 2
 
@@ -31,6 +36,7 @@ struct FaceData {
 	GLbitfield zneg : 1;
 };
 
+
 class Chunk
 {
 public:
@@ -52,6 +58,8 @@ public:
 	inline bool setBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte id) { if (blocks[x][y][z] != id) { blocks[x][y][z] = id; updated = false; return updated; } }
 	inline GLuint getVaoId() { return _vaoId; }
 	inline GLuint getVertexCount() { return _vertexCount; }
+	bool isEqualTo(Chunk * chk);
+	bool isEqualTo(Vec3GLf * v);
 	void update();
 	~Chunk();
 private:
@@ -60,5 +68,47 @@ private:
 	void insertBlock(GLubyte & x, GLubyte & y, GLubyte & z, GLubyte id);
 	void getFileName(char * file_destination);
 	void addFace(GLubyte* data, GLfloat* ambientData, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& aoSize);
+};
+
+class memory_pool {
+
+private:
+	//TODO add stack of recently free'd positions
+	char ** mem_pool;
+	uint64_t * base;
+	uint64_t current_pool;
+public:
+	memory_pool();
+	void * request_bytes(uint64_t n_bytes);
+	void showWhatYouGot(int k);
+	~memory_pool();
+};
+
+typedef struct bucket {
+	Chunk * chk;
+	struct bucket * next;
+} Bucket;
+
+struct hashtable {
+	Bucket * bucket_ptr;
+};
+
+class HashTable
+{
+
+private:
+	struct hashtable * ht; // struct hashtable ht[size_entry]
+	memory_pool * mp;
+
+public:
+	HashTable();
+	void attachMemoryPool(memory_pool * mp);
+	Bucket * getBucketAt(int index); //SOLO PARA SUSTITUIR un ITERADOR POR KEYS
+	Chunk * getChunkByKey(Vec3GLf key);
+	void insertChunk(Chunk * chk);
+	~HashTable();
+
+private:
+	uint64_t computeHashOf(Vec3GLf key);
 };
 
