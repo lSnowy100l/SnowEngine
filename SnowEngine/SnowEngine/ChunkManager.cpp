@@ -13,7 +13,7 @@ ChunkManager::ChunkManager(ChunkRenderer* renderer) : _renderer(renderer)
 
 	//Creating random chunks
 	for (int i = 0; i < 1; i++) {
-		for (int j = 0; j < 5; j++)
+		for (int j = 0; j < 1; j++)
 			ht->insertChunk(new Chunk(i, 0, j));
 	}
 
@@ -38,13 +38,15 @@ void ChunkManager::update() {
 	Chunk * c;
 	Bucket * b;
 	for(int i=0; i<ENTRY_SIZE; i++){
-		
 		b = this->ht->getBucketAt(i);
-		if (b != nullptr) {
-			c = b->chk;
-			c->update();
-			_renderer->addToRenderList(c);
-		}
+		do {
+			if (b != nullptr) {
+				c = b->chk;
+				c->update();
+				_renderer->addToRenderList(c);
+				b = b->next;
+			}
+		} while (b != nullptr);
 	}
 }
 
