@@ -24,6 +24,9 @@ Window::Window(int width, int height, const char* title)
 void Window::update() {
 	glClearColor(.5, 1, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	lastFrame = newFrame;
+	newFrame = glfwGetTime();
+	deltaTime = newFrame - lastFrame;
 	processKeyInputs();
 	_renderer->renderAll();
 	glfwSwapBuffers(_window);
@@ -34,17 +37,17 @@ void Window::processKeyInputs() {
 
 	
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -this->current_speed));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -this->current_speed*deltaTime));
 	if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(-this->current_speed, 0, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(-this->current_speed*deltaTime, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, this->current_speed));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, this->current_speed*deltaTime));
 	if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(this->current_speed, 0, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(this->current_speed*deltaTime, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, this->current_speed, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, this->current_speed*deltaTime, 0));
 	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, -this->current_speed, 0));
+		_renderer->getCamera()->incRelPos(Vec3GLf(0, -this->current_speed*deltaTime, 0));
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
 
