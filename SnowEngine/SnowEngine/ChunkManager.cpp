@@ -14,7 +14,7 @@ ChunkManager::ChunkManager(ChunkRenderer* renderer) : _renderer(renderer)
 	//Creating random chunks
 	for (int i = 0; i < 1; i++) {
 		for (int j = 0; j < 1; j++)
-			ht->insertChunk(new Chunk(i, 0, j))
+			ht->insertChunk(new Chunk(i, 0, j));
 	}
 
 }
