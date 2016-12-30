@@ -64,6 +64,7 @@ int main() {
 		
 		cm->update();
 		w->update();
+		camera->updateMovementCamera(w->getDeltaTime());
 	}
 
 	delete cm;

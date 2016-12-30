@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Camera.h"
-#include "common.h"
 
 using namespace std;
 
@@ -34,7 +33,8 @@ void Camera::moveCamera(Vec3GLf increment) {
 
 void Camera::absoluteMovement(Vec3GLf increment) {
 
-	incAbsPos(Vec3GLf(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), increment.y, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad)));
+	//incAbsPos(Vec3GLf(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), increment.y, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad)));
+	storeNextIterationMove(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), increment.y, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad));
 }
 
 void Camera::relativeMovement(Vec3GLf increment) {
@@ -54,15 +54,30 @@ void Camera::relativeMovement(Vec3GLf increment) {
 		absx = cosf(_pitchRad) * (- increment.z * sinf(_yawRad));
 		absy = increment.z * sinf(_pitchRad);
 		absz = cosf(_pitchRad) * increment.z * cosf(_yawRad);
-		
 	}
 	
-	incAbsPos(Vec3GLf(absx, absy, absz));
+	//incAbsPos(Vec3GLf(absx, absy, absz));
+	storeNextIterationMove(absx, absy, absz);
 }
 
 void Camera::setMovementMode(bool mode)
 {
 	this->_use_abs_movement = mode;
+}
+
+void Camera::storeNextIterationMove(GLfloat x, GLfloat y, GLfloat z)
+{
+	_iteration_increment.x += x; _iteration_increment.y += y; _iteration_increment.z += z;
+}
+
+void Camera::updateMovementCamera(double delta_time)
+{
+	double theoretical_speed = this->getCurrentSpeed()*delta_time;
+	
+	_iteration_increment = _iteration_increment.normalized();
+	_iteration_increment *= theoretical_speed;
+	this->incAbsPos(this->_iteration_increment); 
+	this->resetIterationMove();
 }
 
 

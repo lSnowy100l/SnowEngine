@@ -17,8 +17,10 @@ struct Vec3GLf {
 		this->z += v.z;
 		return *this;
 	}
-	Vec3GLf& operator*=(const Vec3GLf& v) {
-		
+	Vec3GLf& operator*=(double v) { // For scalar multiplication
+		this->x *= v;
+		this->y *= v;
+		this->z *= v;
 		return *this;
 	}
 	Vec3GLf operator-() {
@@ -27,12 +29,13 @@ struct Vec3GLf {
 	bool operator==(const Vec3GLf& v) {
 		return x == v.x && y == v.y && z == v.z;
 	}
-	float length() {
-		return sqrtf(x*x + y*y + z*z);
+	GLfloat length() {
+		return (GLfloat) sqrtf(x*x + y*y + z*z);
 	}
 	Vec3GLf normalized() {
-		float l = length();
-		return Vec3GLf(x/l, y/l, z/l);
+		GLfloat l = length();
+		if(l != 0) return Vec3GLf(x / l, y / l, z / l);
+		return Vec3GLf(0, 0, 0);
 	}
 	static Vec3GLf toVector(GLfloat pitch, GLfloat yaw) {
 		double radPitch = pitch * DEG_TO_RAD, radYaw = yaw * DEG_TO_RAD;
