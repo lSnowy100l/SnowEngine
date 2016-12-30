@@ -3,11 +3,11 @@
 Window::Window(int width, int height, const char* title)
 {
 	setWindowHints();
-	_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+	_window = glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(),nullptr);
 	setWindowCallbacks();
 	glfwGetFramebufferSize(_window, &width, &height);
 	glfwMakeContextCurrent(_window);
-	glfwSwapInterval(0);
+	glfwSwapInterval(1); // To avoid tearing
 	glfwSetInputMode(_window, GLFW_STICKY_KEYS, 1);
 	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwGetCursorPos(_window, &lxpos, &lypos);
@@ -29,6 +29,7 @@ void Window::update() {
 	deltaTime = newFrame - lastFrame;
 	processKeyInputs();
 	_renderer->renderAll();
+	glFinish();
 	glfwSwapBuffers(_window);
 	glfwPollEvents();
 }

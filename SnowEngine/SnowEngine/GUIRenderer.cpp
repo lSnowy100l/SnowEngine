@@ -16,14 +16,18 @@ GUIRenderer::GUIRenderer(MasterRenderer* renderer, const char* vertexShaderFileP
 
 void GUIRenderer::render() {
 	glUseProgram(_programId);
-	
+	GLfloat data[] = { 0.00078125, 0, 0, 0, 0, 0.00138888888888888888888888888888, 0, 0, 0, 0, 1, 0, -1, -1, 0, 1 };
+	glUniformMatrix4fv(_toPixelsMatrixLoc, 1, GL_FALSE, &data[0]);
 	for (GUI* gui : gui_list) {
 		glBindVertexArray(gui->getVaoId());
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glBindTexture(GL_TEXTURE_2D, gui->getTexture()->getId());
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glDisableVertexAttribArray(0);
-		glBindVertexArray(0);
 	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisableVertexAttribArray(0);
+	glBindVertexArray(0);
 	glUseProgram(NULL);
 }
 
@@ -33,8 +37,10 @@ void GUIRenderer::addGUI(GUI* gui) {
 
 void GUIRenderer::getAttribLocations() {
 	glBindAttribLocation(_programId, 0, "position");
+	glBindAttribLocation(_programId, 1, "texCoords");
 }
 
 void GUIRenderer::getUniformLocations() {
-
+	_toPixelsMatrixLoc = glGetUniformLocation(_programId, "toPixelsMatrix");
+	_textureSamplerLoc = glGetUniformLocation(_programId, "texture");
 }

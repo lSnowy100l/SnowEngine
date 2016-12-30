@@ -12,7 +12,8 @@ out vec3 colour;
 
 void main()
 {
-	vec4 worldPos = rotationMatrix * translationMatrix * chunkTranslationMatrix * vec4(position, 1.0);
+	mat4 viewMatrix = rotationMatrix * translationMatrix;
+	vec4 worldPos = viewMatrix * chunkTranslationMatrix * vec4(position, 1.0);
 	vec3 posfloat = position;
 	float distance = length(worldPos.xz);
 	gl_Position = projectionMatrix * worldPos - vec4(0.0, pow(distance/64, 2), 0.0, 0.0);

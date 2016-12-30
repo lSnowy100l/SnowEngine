@@ -65,6 +65,7 @@ public:
 class GUIRenderer : public Renderer {
 private:
 	std::vector<GUI*> gui_list;
+	GLint _toPixelsMatrixLoc, _textureSamplerLoc;
 public:
 	GUIRenderer(MasterRenderer* renderer, const char* vertexShaderFilePath, const char* fragmentShaderFilePath);
 	void getUniformLocations();

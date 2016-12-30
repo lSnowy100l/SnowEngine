@@ -25,8 +25,10 @@ void ChunkRenderer::render() {
 		ChunkNode* aux = first_Chunk;
 		first_Chunk = first_Chunk->next;
 		delete aux;
-		
 	}
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+	glBindVertexArray(NULL);
 	glUseProgram(NULL);
 }
 
@@ -48,9 +50,6 @@ void ChunkRenderer::renderChunk(Chunk* chunk) {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glDrawArrays(GL_TRIANGLES, 0, chunk->getVertexCount());
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-	glBindVertexArray(NULL);
 }
 
 void ChunkRenderer::addToRenderList(Chunk * chunk)

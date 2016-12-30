@@ -1,11 +1,14 @@
 #version 400 core
 
 in vec2 position;
+in vec2 texCoords;
 
-out vec3 colour;
+uniform mat4 toPixelsMatrix;
+
+out vec2 pass_texCoords;
 
 void main()
 {
-	gl_Position = vec4(position, 0.0, 1.0);
-	colour = vec3(0.2, 0.2, 0.2);
+	gl_Position = toPixelsMatrix * vec4(position, 0.0, 1.0);
+	pass_texCoords = texCoords;
 }

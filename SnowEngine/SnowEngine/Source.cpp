@@ -10,8 +10,8 @@
 #include "ChunkManager.h"
 #include "common.h"
 
-#define WIDTH 1280
-#define HEIGHT 720
+#define WIDTH 1680
+#define HEIGHT 1050
 #define TITLE "First Window"
 
 Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
@@ -20,9 +20,6 @@ Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
 }
 
 int main() {
-	
-
-	
 	// GLFW Libraries initialization
 	if (!glfwInit()) terror("Failed to initialize GLFW library", -1);
 
