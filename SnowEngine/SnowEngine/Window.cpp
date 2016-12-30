@@ -37,17 +37,17 @@ void Window::processKeyInputs() {
 
 	
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, -this->current_speed*deltaTime));
+		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, -this->current_speed*deltaTime));
 	if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(-this->current_speed*deltaTime, 0, 0));
+		_renderer->getCamera()->moveCamera(Vec3GLf(-this->current_speed*deltaTime, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, 0, this->current_speed*deltaTime));
+		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, this->current_speed*deltaTime));
 	if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(this->current_speed*deltaTime, 0, 0));
+		_renderer->getCamera()->moveCamera(Vec3GLf(this->current_speed*deltaTime, 0, 0));
 	if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, this->current_speed*deltaTime, 0));
+		_renderer->getCamera()->moveCamera(Vec3GLf(0, this->current_speed*deltaTime, 0));
 	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		_renderer->getCamera()->incRelPos(Vec3GLf(0, -this->current_speed*deltaTime, 0));
+		_renderer->getCamera()->moveCamera(Vec3GLf(0, -this->current_speed*deltaTime, 0));
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
 
@@ -57,6 +57,8 @@ void Window::processKeyInputs() {
 	if (glfwGetKey(_window, GLFW_KEY_TAB) == GLFW_PRESS) spec_keys[MY_TAB_KEY] = true;
 	if (glfwGetKey(_window, GLFW_KEY_TAB) == GLFW_RELEASE && spec_keys[MY_TAB_KEY]) handle_key_actions_after_release(MY_TAB_KEY);
 
+	if (glfwGetKey(_window, GLFW_KEY_T) == GLFW_PRESS) spec_keys[MY_T_KEY] = true;
+	if (glfwGetKey(_window, GLFW_KEY_T) == GLFW_RELEASE && spec_keys[MY_T_KEY]) handle_key_actions_after_release(MY_T_KEY);
 }
 
 void Window::handle_key_actions_after_release(GLuint key) {
@@ -65,6 +67,7 @@ void Window::handle_key_actions_after_release(GLuint key) {
 		break;
 	case MY_TAB_KEY: if (action_spec_keys[MY_TAB_KEY]) this->current_speed = CAM_SPEED_NORM; else this->current_speed = CAM_SPEED_FAST;
 		break;
+	case MY_T_KEY: if (action_spec_keys[MY_T_KEY]) this->_renderer->getCamera()->setMovementMode(true); else this->_renderer->getCamera()->setMovementMode(false);
 	}
 	spec_keys[key] = false;
 	action_spec_keys[key] = !action_spec_keys[key];
