@@ -22,6 +22,8 @@ Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
 int main() {
 	
 
+	std::cout << "Verifying 64 bits compatibility ... ";
+	((sizeof(int *) == 8)) ? fprintf(stdout, "Correct\n") : terror("System is not 64 bits, exiting.", -1);
 	
 	// GLFW Libraries initialization
 	if (!glfwInit()) terror("Failed to initialize GLFW library", -1);
