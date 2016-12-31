@@ -7,7 +7,7 @@ Window::Window(int width, int height, const char* title)
 	setWindowCallbacks();
 	glfwGetFramebufferSize(_window, &width, &height);
 	glfwMakeContextCurrent(_window);
-	glfwSwapInterval(0);
+	glfwSwapInterval(1);
 	glfwSetInputMode(_window, GLFW_STICKY_KEYS, 1);
 	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwGetCursorPos(_window, &lxpos, &lypos);
@@ -25,7 +25,7 @@ void Window::update() {
 	glClearColor(.5, 1, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	lastFrame = newFrame;
-	newFrame = glfwGetTime();
+	newFrame = (GLfloat) glfwGetTime();
 	deltaTime = newFrame - lastFrame;
 	processKeyInputs();
 	_renderer->renderAll();
@@ -34,8 +34,9 @@ void Window::update() {
 }
 
 void Window::processKeyInputs() {
-
-	
+	for (InputReceiver* ir : inputReceivers)
+		ir->sendInput(_window);
+	/*
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS) 
 		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, -_renderer->getCamera()->getCurrentSpeed()));
 	if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
@@ -60,7 +61,7 @@ void Window::processKeyInputs() {
 	}
 		
 	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		_renderer->getCamera()->moveCamera(Vec3GLf(0, -_renderer->getCamera()->getCurrentSpeed(), 0));
+		_renderer->getCamera()->moveCamera(Vec3GLf(0, -_renderer->getCamera()->getCurrentSpeed(), 0));*/
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
 
@@ -105,8 +106,8 @@ void Window::setWindowHints() {
 void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
 	Window* w = (Window*) glfwGetWindowUserPointer(window);
 	Camera* c = w->_renderer->getCamera();
-	c->incPitch((ypos - w->lypos) * SENSIBILITY_Y);
-	c->incYaw((xpos - w->lxpos) * SENSIBILITY_X);
+	c->incPitch((GLfloat) (ypos - w->lypos) * SENSIBILITY_Y);
+	c->incYaw((GLfloat) (xpos - w->lxpos) * SENSIBILITY_X);
 	w->lypos = ypos;
 	w->lxpos = xpos;
 }

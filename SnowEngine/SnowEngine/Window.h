@@ -4,9 +4,10 @@
 #include <GLFW/glfw3.h>
 
 #include "MasterRenderer.h"
+#include "InputReceiver.h"
 
-#define SENSIBILITY_X 0.2
-#define SENSIBILITY_Y 0.3
+#define SENSIBILITY_X 0.2f
+#define SENSIBILITY_Y 0.3f
 #define N_PR_KEYS 16
 
 
@@ -25,12 +26,14 @@ private:
 	bool action_spec_keys[N_PR_KEYS];
 	GLfloat current_speed = CAM_SPEED_NORM;
 	GLfloat lastFrame = 0, newFrame = 0, deltaTime = 0;
+	std::vector<InputReceiver*> inputReceivers;
 public:
 	Window(int width, int height, const char* title);
 	void update();
 	inline int shouldClose() { return glfwWindowShouldClose(_window); }
 	void processKeyInputs();
 	void handle_key_actions_after_release(GLuint key);
+	inline void addInputReceiver(InputReceiver* ir) { inputReceivers.push_back(ir); }
 	inline void associateRenderer(MasterRenderer* renderer) { _renderer = renderer; }
 	friend void cursorCallback(GLFWwindow* window, double xpos, double ypos);
 	double getDeltaTime() { return deltaTime; }

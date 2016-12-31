@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Windows.h>
 #include "MasterRenderer.h"
 #include "common.h"
 

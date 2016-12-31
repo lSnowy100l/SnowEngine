@@ -33,7 +33,7 @@ int main() {
 
 	fprintf(stdout, "%s\n", glfwGetVersionString());
 
-	Window* w = new Window(WIDTH, HEIGHT, TITLE);
+	Window* gameWindow = new Window(WIDTH, HEIGHT, TITLE);
 
 	// GLEW Libraries initialization
 	GLenum err = glewInit();
@@ -42,20 +42,21 @@ int main() {
 	glewExperimental = GL_TRUE;
 
 	
-	Camera * camera = new Camera(WIDTH, HEIGHT, 70, 0.01, 1000, Vec3GLf(70,50,70));
+	Camera * camera = new Camera(WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f, Vec3GLf(70,50,70));
 	
 	MasterRenderer * renderer = new MasterRenderer(camera);
 	ChunkRenderer * cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
 	renderer->addRenderer(cr);
-	w->associateRenderer(renderer);
+	gameWindow->associateRenderer(renderer);
 	ChunkManager * cm = new ChunkManager(cr);
 	
-	World * planet_earth = new World(3/2);
+	World * planet_earth = new World(1);
 
 	Player * p = new Player(camera, cm, planet_earth);
-	
-	//Game loop
-	while (w->shouldClose() == 0) {
+	gameWindow->addInputReceiver(p);
+
+	// Main game loop
+	while (gameWindow->shouldClose() == 0) {
 		/*
 		for (int i = -2; i < 3; i++) {
 			for (int j = -2; j < 3; j++) {
@@ -66,12 +67,12 @@ int main() {
 		}
 		*/
 		cm->update();
-		w->update();
-		p->updatePlayerMovement(w->getDeltaTime());
+		gameWindow->update();
+		p->updatePlayerMovement(gameWindow->getDeltaTime());
 	}
 
 	delete cm;
-	delete w;
+	delete gameWindow;
 	delete renderer;
 	delete p;
 

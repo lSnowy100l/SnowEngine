@@ -40,23 +40,23 @@ void Camera::absoluteMovement(Vec3GLf increment) {
 }
 
 void Camera::relativeMovement(Vec3GLf increment) {
-	double absx, absy, absz;
+	GLfloat absx = 0, absy = 0, absz = 0;
 
-	if (increment.x != 0) {
-		absx = increment.x * cosf(_yawRad);
-		absy = 0;
-		absz = increment.x * sinf(_yawRad);
-	}
-	else if (increment.y != 0) {
-		absx = 0;
-		absy = increment.y;
-		absz = 0;
-	}
-	else {
-		absx = cosf(_pitchRad) * (-increment.z * sinf(_yawRad));
-		absy = increment.z * sinf(_pitchRad);
-		absz = cosf(_pitchRad) * increment.z * cosf(_yawRad);
-	}
+	//if (increment.x != 0) {
+		absx += increment.x * cosf(_yawRad);
+		//absy += 0;
+		absz += increment.x * sinf(_yawRad);
+	//}
+	//else if (increment.y != 0) {
+		//absx += 0;
+		absy += increment.y;
+		//absz += 0;
+	//}
+	//else {
+		absx += /*cosf(_pitchRad) */ (-increment.z * sinf(_yawRad));
+		//absy += increment.z * sinf(_pitchRad);
+		absz += /*cosf(_pitchRad) */ increment.z * cosf(_yawRad);
+	//}
 	
 	//incAbsPos(Vec3GLf(absx, absy, absz));
 	storeNextIterationMove(absx, absy, absz);
@@ -72,10 +72,9 @@ void Camera::storeNextIterationMove(GLfloat x, GLfloat y, GLfloat z)
 	_iteration_increment.x += x; _iteration_increment.y += y; _iteration_increment.z += z;
 }
 
-void Camera::updateMovementCamera(double delta_time, Vec3GLf * acceleration)
-{
-	double theoretical_speed = this->getCurrentSpeed()*delta_time;
-	double jump_force = _iteration_increment.y;
+void Camera::updateMovementCamera(GLfloat delta_time, Vec3GLf * acceleration) {
+	GLfloat theoretical_speed = this->getCurrentSpeed()*delta_time;
+	GLfloat jump_force = _iteration_increment.y;
 
 
 	_iteration_increment = _iteration_increment.normalized();
