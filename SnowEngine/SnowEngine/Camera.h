@@ -8,6 +8,7 @@
 
 #define CAM_SPEED_NORM 15
 #define CAM_SPEED_FAST 50
+#define JUMP_FORCE 50
 
 class Camera
 {
@@ -16,6 +17,7 @@ private:
 	Vec3GLf _position = Vec3GLf();
 	Mat4GLf _projectionMatrix;
 	bool _use_abs_movement; //For alternating between jetpack movement
+	bool _on_jump, _start_jump;
 	double _yawRad, _pitchRad; //Avoid restacking continuosly
 	Vec3GLf _iteration_increment; //Absolute positional increment for the next iteration
 	double current_speed = CAM_SPEED_NORM; //Speed for camera and player movement
@@ -32,6 +34,10 @@ public:
 	void absoluteMovement(Vec3GLf increment);
 	void relativeMovement(Vec3GLf increment);
 	void setMovementMode(bool mode);
+	inline void setJump(bool jump) { this->_on_jump = jump; }
+	inline void setStartJump(bool start_jump) { this->_start_jump = start_jump; }
+	inline bool getStartJump() { return this->_start_jump; }
+	inline bool getJump() { return this->_on_jump; }
 	void storeNextIterationMove(GLfloat x, GLfloat y, GLfloat z);
 	void updateMovementCamera(double delta_time, Vec3GLf * acceleration);
 	void resetIterationMove() { _iteration_increment.x = 0; _iteration_increment.y = 0; _iteration_increment.z = 0; }

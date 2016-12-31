@@ -246,7 +246,7 @@ void Chunk::generateChunk() {
 		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
 			blocks[x][y] = new GLubyte[CHUNK_SIZE];
 			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
-				blocks[x][y][z] = 1;
+				blocks[x][y][z] = (sqrt(x*x + y*y + z*z) < CHUNK_SIZE);
 			}
 		}
 	}

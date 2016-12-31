@@ -8,6 +8,8 @@ Camera::Camera(GLfloat width, GLfloat height, GLfloat fov, GLfloat znear, GLfloa
 {
 	this->_position = position;
 	_use_abs_movement = true;
+	_on_jump = false;
+	_start_jump = false;
 }
 
 Vec3GLf Camera::getLookAt() {
@@ -35,7 +37,7 @@ void Camera::moveCamera(Vec3GLf increment) {
 void Camera::absoluteMovement(Vec3GLf increment) {
 
 	//incAbsPos(Vec3GLf(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), increment.y, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad)));
-	storeNextIterationMove(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), 0, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad));
+	storeNextIterationMove(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), increment.y, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad));
 }
 
 void Camera::relativeMovement(Vec3GLf increment) {
@@ -74,13 +76,27 @@ void Camera::storeNextIterationMove(GLfloat x, GLfloat y, GLfloat z)
 void Camera::updateMovementCamera(double delta_time, Vec3GLf * acceleration)
 {
 	double theoretical_speed = this->getCurrentSpeed()*delta_time;
-	
+	double jump_force = _iteration_increment.y;
+
+
 	_iteration_increment = _iteration_increment.normalized();
 	_iteration_increment *= theoretical_speed;
 
-	_iteration_increment.x += (acceleration->x * delta_time);
-	_iteration_increment.y += (acceleration->y * delta_time);
-	_iteration_increment.z += (acceleration->z * delta_time);
+	
+	if (this->_start_jump) { //If we jumped, do not normalize the jumping power
+		acceleration->y += jump_force;
+		this->_start_jump = false;
+	}
+
+	if (this->_use_abs_movement) { //Gravity should only affect if jetpack is off
+		_iteration_increment.x += (acceleration->x * delta_time);
+		_iteration_increment.y += (acceleration->y * delta_time);
+		_iteration_increment.z += (acceleration->z * delta_time);
+	}
+	else {
+		//Jetpack is on (do not accumulate gravitational force)
+		acceleration->reset();
+	}
 
 	this->incAbsPos(this->_iteration_increment); 
 	this->resetIterationMove();

@@ -44,8 +44,21 @@ void Window::processKeyInputs() {
 		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, _renderer->getCamera()->getCurrentSpeed()));
 	if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
 		_renderer->getCamera()->moveCamera(Vec3GLf(_renderer->getCamera()->getCurrentSpeed(), 0, 0));
-	if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		_renderer->getCamera()->moveCamera(Vec3GLf(0, _renderer->getCamera()->getCurrentSpeed(), 0));
+	if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+		if (!action_spec_keys[MY_T_KEY]) {
+			//If jetpack mode is off,
+			if (!_renderer->getCamera()->getStartJump() && !_renderer->getCamera()->getJump()) {
+				_renderer->getCamera()->setJump(true);
+				_renderer->getCamera()->setStartJump(true);
+				_renderer->getCamera()->moveCamera(Vec3GLf(0, JUMP_FORCE, 0));
+			}
+		}
+		else {
+			//If it is not
+			_renderer->getCamera()->moveCamera(Vec3GLf(0, _renderer->getCamera()->getCurrentSpeed(), 0));
+		}
+	}
+		
 	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		_renderer->getCamera()->moveCamera(Vec3GLf(0, -_renderer->getCamera()->getCurrentSpeed(), 0));
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -59,6 +72,7 @@ void Window::processKeyInputs() {
 
 	if (glfwGetKey(_window, GLFW_KEY_T) == GLFW_PRESS) spec_keys[MY_T_KEY] = true;
 	if (glfwGetKey(_window, GLFW_KEY_T) == GLFW_RELEASE && spec_keys[MY_T_KEY]) handle_key_actions_after_release(MY_T_KEY);
+
 }
 
 void Window::handle_key_actions_after_release(GLuint key) {

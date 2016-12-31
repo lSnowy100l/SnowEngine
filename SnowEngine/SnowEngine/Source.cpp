@@ -50,7 +50,7 @@ int main() {
 	w->associateRenderer(renderer);
 	ChunkManager * cm = new ChunkManager(cr);
 	
-	World * planet_earth = new World(9.8*SIZE_BLOCK);
+	World * planet_earth = new World(3/2);
 
 	Player * p = new Player(camera, cm, planet_earth);
 	

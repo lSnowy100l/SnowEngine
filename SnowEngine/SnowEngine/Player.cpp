@@ -27,6 +27,8 @@ void Player::externalForcesOnPlayer()
 			curr_pos.z = this->_player_cam->getPosition().z + j;
 			if (this->isTouching(curr_pos)) {
 				this->_acceleration.reset();
+				this->_player_cam->setStartJump(false);
+				this->_player_cam->setJump(false);
 				return;
 			}
 		}
