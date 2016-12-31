@@ -4,6 +4,6 @@
 
 class InputReceiver {
 public:
-	virtual void sendInput(GLFWwindow* window) = 0;
+	virtual void sendInput(GLFWwindow* window, GLfloat delta_time) = 0;
 };
 

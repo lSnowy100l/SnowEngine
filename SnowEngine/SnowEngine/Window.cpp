@@ -14,9 +14,6 @@ Window::Window(int width, int height, const char* title)
 	glfwSetWindowUserPointer(_window, this);
 	glEnable(GL_DEPTH_TEST);
 
-	for (bool b : spec_keys) b = false;
-	for (bool b : action_spec_keys) b = false;
-
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 }
@@ -35,7 +32,7 @@ void Window::update() {
 
 void Window::processKeyInputs() {
 	for (InputReceiver* ir : inputReceivers)
-		ir->sendInput(_window);
+		ir->sendInput(_window, this->getDeltaTime());
 	/*
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS) 
 		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, -_renderer->getCamera()->getCurrentSpeed()));
@@ -65,27 +62,6 @@ void Window::processKeyInputs() {
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
 
-	if (glfwGetKey(_window, GLFW_KEY_X) == GLFW_PRESS) spec_keys[MY_X_KEY] = true;
-	if (glfwGetKey(_window, GLFW_KEY_X) == GLFW_RELEASE && spec_keys[MY_X_KEY]) handle_key_actions_after_release(MY_X_KEY);
-
-	if (glfwGetKey(_window, GLFW_KEY_TAB) == GLFW_PRESS) spec_keys[MY_TAB_KEY] = true;
-	if (glfwGetKey(_window, GLFW_KEY_TAB) == GLFW_RELEASE && spec_keys[MY_TAB_KEY]) handle_key_actions_after_release(MY_TAB_KEY);
-
-	if (glfwGetKey(_window, GLFW_KEY_T) == GLFW_PRESS) spec_keys[MY_T_KEY] = true;
-	if (glfwGetKey(_window, GLFW_KEY_T) == GLFW_RELEASE && spec_keys[MY_T_KEY]) handle_key_actions_after_release(MY_T_KEY);
-
-}
-
-void Window::handle_key_actions_after_release(GLuint key) {
-	switch (key) {
-	case MY_X_KEY: if (action_spec_keys[MY_X_KEY]) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		break;
-	case MY_TAB_KEY: if (action_spec_keys[MY_TAB_KEY]) _renderer->getCamera()->setCurrentSpeed(CAM_SPEED_NORM); else _renderer->getCamera()->setCurrentSpeed(CAM_SPEED_FAST);
-		break;
-	case MY_T_KEY: if (action_spec_keys[MY_T_KEY]) this->_renderer->getCamera()->setMovementMode(true); else this->_renderer->getCamera()->setMovementMode(false);
-	}
-	spec_keys[key] = false;
-	action_spec_keys[key] = !action_spec_keys[key];
 }
 
 Window::~Window()

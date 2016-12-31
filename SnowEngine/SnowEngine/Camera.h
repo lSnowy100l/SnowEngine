@@ -44,6 +44,9 @@ public:
 	void setCurrentSpeed(GLfloat speed) { this->current_speed = speed; }
 	inline void incPitch(GLfloat pitch) { _pitch += pitch; if (_pitch > 90) _pitch = 90; if (_pitch < -90) _pitch = -90; }
 	inline void incYaw(GLfloat yaw) { _yaw += yaw; while (_yaw > 360) _yaw -= 360; while (_yaw < 0) _yaw += 360; }
+	GLfloat getPitch() { return _pitch; }
+	GLfloat getYaw() { return _yaw; }
+	inline void setPosition(Vec3GLf pos) { _position.x = pos.x; _position.y = pos.y; _position.z = pos.z; }
 	~Camera();
 };
 

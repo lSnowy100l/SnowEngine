@@ -8,13 +8,7 @@
 
 #define SENSIBILITY_X 0.2f
 #define SENSIBILITY_Y 0.3f
-#define N_PR_KEYS 16
 
-
-//Special keys defines
-#define MY_X_KEY 0 //Wireframe mode
-#define MY_TAB_KEY 1 //Speed mode
-#define MY_T_KEY 2 //Jetpack mode
 
 class Window
 {
@@ -22,9 +16,6 @@ private:
 	GLFWwindow* _window;
 	MasterRenderer* _renderer;
 	double lxpos, lypos;
-	bool spec_keys[N_PR_KEYS];
-	bool action_spec_keys[N_PR_KEYS];
-	GLfloat current_speed = CAM_SPEED_NORM;
 	GLfloat lastFrame = 0, newFrame = 0, deltaTime = 0;
 	std::vector<InputReceiver*> inputReceivers;
 public:
@@ -32,7 +23,6 @@ public:
 	void update();
 	inline int shouldClose() { return glfwWindowShouldClose(_window); }
 	void processKeyInputs();
-	void handle_key_actions_after_release(GLuint key);
 	inline void addInputReceiver(InputReceiver* ir) { inputReceivers.push_back(ir); }
 	inline void associateRenderer(MasterRenderer* renderer) { _renderer = renderer; }
 	friend void cursorCallback(GLFWwindow* window, double xpos, double ypos);

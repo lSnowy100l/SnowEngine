@@ -42,7 +42,7 @@ int main() {
 	glewExperimental = GL_TRUE;
 
 	
-	Camera * camera = new Camera(WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f, Vec3GLf(70,50,70));
+	Camera * camera = new Camera(WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f, Vec3GLf(70,70,70));
 	
 	MasterRenderer * renderer = new MasterRenderer(camera);
 	ChunkRenderer * cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
@@ -52,7 +52,7 @@ int main() {
 	
 	World * planet_earth = new World(1);
 
-	Player * p = new Player(camera, cm, planet_earth);
+	Player * p = new Player(camera, cm, planet_earth, Vec3GLf(70, 70-PLAYER_HEIGHT, 70));
 	gameWindow->addInputReceiver(p);
 
 	// Main game loop
