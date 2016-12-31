@@ -148,6 +148,7 @@ void Chunk::addFace(GLubyte* data, GLfloat* ambientData, GLubyte type, GLubyte x
 }
 
 void Chunk::update() {
+	// If the chunk is already up to date don't do anything
 	if (updated) {
 		return;
 	}

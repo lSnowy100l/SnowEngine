@@ -25,7 +25,6 @@ void ChunkRenderer::render() {
 		ChunkNode* aux = first_Chunk;
 		first_Chunk = first_Chunk->next;
 		delete aux;
-		
 	}
 	glUseProgram(NULL);
 }
@@ -37,9 +36,9 @@ void ChunkRenderer::getAttribLocations() {
 
 void ChunkRenderer::getUniformLocations() {
 	chunkTranslationMatrixLoc = glGetUniformLocation(_programId, "chunkTranslationMatrix");
-	translationMatrixLoc = glGetUniformLocation(_programId, "translationMatrix");
-	rotationMatrixLoc = glGetUniformLocation(_programId, "rotationMatrix");
-	projectionMatrixLoc = glGetUniformLocation(_programId, "projectionMatrix");
+	translationMatrixLoc =		glGetUniformLocation(_programId, "translationMatrix");
+	rotationMatrixLoc =			glGetUniformLocation(_programId, "rotationMatrix");
+	projectionMatrixLoc =		glGetUniformLocation(_programId, "projectionMatrix");
 }
 
 void ChunkRenderer::renderChunk(Chunk* chunk) {
