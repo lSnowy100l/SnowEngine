@@ -36,7 +36,7 @@ void Window::update() {
 void Window::processKeyInputs() {
 
 	
-	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS) //_renderer->getCamera()->getCurrentSpeed()*deltaTime
+	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS) 
 		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, -_renderer->getCamera()->getCurrentSpeed()));
 	if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
 		_renderer->getCamera()->moveCamera(Vec3GLf(-_renderer->getCamera()->getCurrentSpeed(), 0, 0));

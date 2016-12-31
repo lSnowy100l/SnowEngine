@@ -6,8 +6,8 @@
 #include "Mat4GLf.h"
 #include "common.h"
 
-#define CAM_SPEED_NORM 5
-#define CAM_SPEED_FAST 20
+#define CAM_SPEED_NORM 15
+#define CAM_SPEED_FAST 50
 
 class Camera
 {
@@ -19,9 +19,9 @@ private:
 	double _yawRad, _pitchRad; //Avoid restacking continuosly
 	Vec3GLf _iteration_increment; //Absolute positional increment for the next iteration
 	double current_speed = CAM_SPEED_NORM; //Speed for camera and player movement
-public:
 	GLfloat _pitch = 0, _yaw = 0;
-	Camera(GLfloat width, GLfloat height, GLfloat fov, GLfloat znear, GLfloat zfar);
+public:
+	Camera(GLfloat width, GLfloat height, GLfloat fov, GLfloat znear, GLfloat zfar, Vec3GLf position);
 	inline Vec3GLf getPosition() { return _position; }											// Returns actual camera position
 	Vec3GLf getLookAt();																		// Returns actual camera view vector
 	inline Mat4GLf getTranslationMatrix() { return Mat4GLf::translationMatrix(-_position); }	// Creates a translation matrix from camera's actual position
@@ -33,7 +33,7 @@ public:
 	void relativeMovement(Vec3GLf increment);
 	void setMovementMode(bool mode);
 	void storeNextIterationMove(GLfloat x, GLfloat y, GLfloat z);
-	void updateMovementCamera(double delta_time);
+	void updateMovementCamera(double delta_time, Vec3GLf * acceleration);
 	void resetIterationMove() { _iteration_increment.x = 0; _iteration_increment.y = 0; _iteration_increment.z = 0; }
 	double getCurrentSpeed() { return this->current_speed; }
 	void setCurrentSpeed(double speed) { this->current_speed = speed; }

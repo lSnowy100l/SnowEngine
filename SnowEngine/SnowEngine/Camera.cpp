@@ -4,8 +4,9 @@
 using namespace std;
 
 
-Camera::Camera(GLfloat width, GLfloat height, GLfloat fov, GLfloat znear, GLfloat zfar) : _projectionMatrix(Mat4GLf::projectionMatrix(width, height, fov, znear, zfar))
+Camera::Camera(GLfloat width, GLfloat height, GLfloat fov, GLfloat znear, GLfloat zfar, Vec3GLf position) : _projectionMatrix(Mat4GLf::projectionMatrix(width, height, fov, znear, zfar))
 {
+	this->_position = position;
 	_use_abs_movement = true;
 }
 
@@ -34,7 +35,7 @@ void Camera::moveCamera(Vec3GLf increment) {
 void Camera::absoluteMovement(Vec3GLf increment) {
 
 	//incAbsPos(Vec3GLf(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), increment.y, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad)));
-	storeNextIterationMove(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), increment.y, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad));
+	storeNextIterationMove(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), 0, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad));
 }
 
 void Camera::relativeMovement(Vec3GLf increment) {
@@ -51,7 +52,7 @@ void Camera::relativeMovement(Vec3GLf increment) {
 		absz = 0;
 	}
 	else {
-		absx = cosf(_pitchRad) * (- increment.z * sinf(_yawRad));
+		absx = cosf(_pitchRad) * (-increment.z * sinf(_yawRad));
 		absy = increment.z * sinf(_pitchRad);
 		absz = cosf(_pitchRad) * increment.z * cosf(_yawRad);
 	}
@@ -70,12 +71,17 @@ void Camera::storeNextIterationMove(GLfloat x, GLfloat y, GLfloat z)
 	_iteration_increment.x += x; _iteration_increment.y += y; _iteration_increment.z += z;
 }
 
-void Camera::updateMovementCamera(double delta_time)
+void Camera::updateMovementCamera(double delta_time, Vec3GLf * acceleration)
 {
 	double theoretical_speed = this->getCurrentSpeed()*delta_time;
 	
 	_iteration_increment = _iteration_increment.normalized();
 	_iteration_increment *= theoretical_speed;
+
+	_iteration_increment.x += (acceleration->x * delta_time);
+	_iteration_increment.y += (acceleration->y * delta_time);
+	_iteration_increment.z += (acceleration->z * delta_time);
+
 	this->incAbsPos(this->_iteration_increment); 
 	this->resetIterationMove();
 }

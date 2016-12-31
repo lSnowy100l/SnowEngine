@@ -16,6 +16,7 @@ public:
 	void update();
 	Chunk* getChunk(GLuint x, GLuint y, GLuint z);
 	GLubyte getBlockAt(GLuint x, GLuint y, GLuint z);
+	HashTable * getAssociatedHashTable() { return ht; }
 	void setBlockAt(GLuint x, GLuint y, GLuint z, GLubyte type);
 	~ChunkManager();
 };

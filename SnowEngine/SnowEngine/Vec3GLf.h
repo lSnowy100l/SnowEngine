@@ -32,6 +32,11 @@ struct Vec3GLf {
 	GLfloat length() {
 		return (GLfloat) sqrtf(x*x + y*y + z*z);
 	}
+	void reset() {
+		this->x = 0;
+		this->y = 0;
+		this->z = 0;
+	}
 	Vec3GLf normalized() {
 		GLfloat l = length();
 		if(l != 0) return Vec3GLf(x / l, y / l, z / l);
