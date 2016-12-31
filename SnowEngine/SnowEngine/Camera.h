@@ -13,7 +13,6 @@
 class Camera
 {
 private:
-	
 	Vec3GLf _position = Vec3GLf();
 	Mat4GLf _projectionMatrix;
 	bool _use_abs_movement; //For alternating between jetpack movement

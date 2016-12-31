@@ -8,7 +8,7 @@ const BlockData Chunk::blockData[] = {
 	BlockData(0, 0, 0, 0),
 	BlockData(125, 125, 125, 255) };
 
-Chunk::Chunk(GLuint x, GLuint y, GLuint z) : x(x), y(y), z(z) {
+Chunk::Chunk(Vec3GLui position) : _position(position) {
 	char file_source[MAX_PATH];
 	getFileName(file_source);
 	blocks = new GLubyte**[CHUNK_SIZE];
@@ -37,16 +37,6 @@ void Chunk::insertBlock(GLubyte& x, GLubyte& y, GLubyte& z, GLubyte id) {
 		y = (y + 1) & CHUNK_SIZE_MINUS;
 		if (y == 0) x = (x + 1) & CHUNK_SIZE_MINUS;
 	}
-}
-
-bool Chunk::isEqualTo(Chunk * chk) {
-	if (chk->x == this->x && chk->y == this->y && chk->z == this->z) return true;
-	return false;
-}
-
-bool Chunk::isEqualTo(Vec3GLf * v) {
-	if (v->x == this->x && v->y == this->y && v->z == this->z) return true;
-	return false;
 }
 
 void Chunk::addFace(GLubyte* data, GLfloat* ambientData, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& aoSize) {
@@ -158,6 +148,7 @@ void Chunk::addFace(GLubyte* data, GLfloat* ambientData, GLubyte type, GLubyte x
 }
 
 void Chunk::update() {
+	// If the chunk is already up to date don't do anything
 	if (updated) {
 		return;
 	}
@@ -216,7 +207,7 @@ void Chunk::update() {
 void Chunk::getFileName(char * file_destination)
 {
 	file_destination[0] = '\0';
-	sprintf(file_destination, "%s%d_%d_%d.chk", data_directory, x, y, z);
+	sprintf(file_destination, "%s%d_%d_%d.chk", data_directory, _position.x, _position.y, _position.z);
 }
 
 void Chunk::loadFromFile(FILE* ptr) {
@@ -317,18 +308,18 @@ void HashTable::attachMemoryPool(memory_pool * mp)
 	this->mp = mp;
 }
 
-Bucket * HashTable::getBucketAt(int index)
+Bucket * HashTable::getBucketAt(uint64_t index)
 {
 	return this->ht[index].bucket_ptr;
 }
 
-Chunk * HashTable::getChunkByKey(Vec3GLf key)
+Chunk * HashTable::getChunkByKey(const Vec3GLui& key)
 {
 	uint64_t hash = this->computeHashOf(key);
 	Bucket * ptr = this->getBucketAt(hash);
 
 	while (ptr != nullptr) {
-		if (ptr->chk != nullptr && ptr->chk->isEqualTo(&key) == true) return ptr->chk;
+		if (ptr->chk != nullptr && ptr->chk->getPosition() == key) return ptr->chk;
 		ptr = ptr->next;
 	}
 	return nullptr;
@@ -357,7 +348,7 @@ HashTable::~HashTable()
 {
 }
 
-uint64_t HashTable::computeHashOf(Vec3GLf key)
+uint64_t HashTable::computeHashOf(Vec3GLui key)
 {
 	return (((uint64_t) key.x % MODULUS) + ((uint64_t) key.y % MODULUS)*MODULUS + ((uint64_t) key.z % MODULUS)*MODULUS*MODULUS);
 }
@@ -387,16 +378,6 @@ void * memory_pool::request_bytes(uint64_t n_bytes)
 	this->base[this->current_pool] = this->base[this->current_pool] + n_bytes;
 	
 	return ptr;
-}
-
-void memory_pool::showWhatYouGot(int k)
-{
-	Bucket * b;
-	for (int i = 0; i <= k; i++) {
-		b = (Bucket *) (this->mem_pool[0] + i*sizeof(Bucket));
-		std::cout << "gona read " << b << std::endl;
-		std::cout << b->chk->getPosition() << std::endl;
-	}
 }
 
 memory_pool::~memory_pool()

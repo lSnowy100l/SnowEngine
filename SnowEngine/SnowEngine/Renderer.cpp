@@ -1,14 +1,19 @@
 #include "MasterRenderer.h"
 
 GLuint Renderer::genShader(const char * filePath, GLenum type) {
+	// Source file read
 	std::ifstream in(filePath);
 	std::stringstream buffer;
 	buffer << in.rdbuf();
 	std::string contents(buffer.str());
 	GLuint shaderId = glCreateShader(type);
 	const GLchar *source = (const GLchar *)contents.c_str();
+
+	// Shader upload and compilation
 	glShaderSource(shaderId, 1, &source, NULL);
 	glCompileShader(shaderId);
+
+	//Error comprobation
 	GLint isCompiled = 0;
 	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &isCompiled);
 	if (isCompiled == GL_FALSE) {
@@ -16,17 +21,15 @@ GLuint Renderer::genShader(const char * filePath, GLenum type) {
 		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<GLchar> errorLog(maxLength);
 		glGetShaderInfoLog(shaderId, maxLength, &maxLength, &errorLog[0]);
-		for (GLchar c : errorLog) {
-			std::cout << c;
-		}
 		glDeleteShader(shaderId);
+		errorLog.push_back('\n'); // Add null termination to the array
+		terror(&errorLog[0], 1);
 		return 0;
 	}
 	return shaderId;
 }
 
-void Renderer::clear()
-{
+void Renderer::clear() {
 	glUseProgram(NULL);
 	glDetachShader(_programId, _vertexShaderId);
 	glDetachShader(_programId, _fragmentShaderId);

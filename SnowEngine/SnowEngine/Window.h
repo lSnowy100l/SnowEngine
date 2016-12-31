@@ -23,7 +23,8 @@ private:
 	double lxpos, lypos;
 	bool spec_keys[N_PR_KEYS];
 	bool action_spec_keys[N_PR_KEYS];
-	double lastFrame = 0, newFrame = 0, deltaTime = 0;
+	GLfloat current_speed = CAM_SPEED_NORM;
+	GLfloat lastFrame = 0, newFrame = 0, deltaTime = 0;
 public:
 	Window(int width, int height, const char* title);
 	void update();

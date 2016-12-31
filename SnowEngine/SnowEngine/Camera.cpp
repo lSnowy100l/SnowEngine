@@ -17,8 +17,7 @@ Vec3GLf Camera::getLookAt() {
 }
 
 Mat4GLf Camera::getRotationMatrix() {
-#define DEG_TO_RAD 0.01745329251
-	double radPitch = _pitch * DEG_TO_RAD, radYaw = _yaw * DEG_TO_RAD;
+	float radPitch = _pitch * DEG_TO_RAD, radYaw = _yaw * DEG_TO_RAD;
 	Vec3GLf right_v	(cosf(radYaw), 0, sinf(radYaw));
 	Vec3GLf up_v	(sinf(radYaw)*sinf(radPitch), cosf(radPitch), -cosf(radYaw)*sinf(radPitch));
 	Vec3GLf back_v	(-sinf(radYaw)*cosf(radPitch), sinf(radPitch), cosf(radYaw)*cosf(radPitch));
@@ -87,7 +86,7 @@ void Camera::updateMovementCamera(double delta_time, Vec3GLf * acceleration)
 		acceleration->y += jump_force;
 		this->_start_jump = false;
 	}
-
+  
 	if (this->_use_abs_movement) { //Gravity should only affect if jetpack is off
 		_iteration_increment.x += (acceleration->x * delta_time);
 		_iteration_increment.y += (acceleration->y * delta_time);
