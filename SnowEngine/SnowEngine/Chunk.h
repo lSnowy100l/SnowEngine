@@ -46,22 +46,22 @@ public:
 	static const BlockData blockData[2];
 private:
 	GLubyte*** blocks;
-	GLuint x, y, z;
+	Vec3GLui _position;
 	GLuint _vaoId, _vboId[VBO_COUNT], _vertexCount;
 	FaceData*** _faceData;
 	bool updated = false;
 public:
-	Chunk(GLuint x, GLuint y, GLuint z);
-	inline Vec3GLf getPosition() { return Vec3GLf(x, y, z); }
+	inline Chunk(GLuint x, GLuint y, GLuint z) : Chunk(Vec3GLui(x, y, z)) {}
+	Chunk(Vec3GLui position);
+	inline Vec3GLui getPosition() { return _position; }
 	inline GLubyte getBlock(GLubyte x, GLubyte y, GLubyte z) { return x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE ? blocks[x][y][z] : 0; }
 	void saveToFile();
-	inline bool setBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte id) { if (blocks[x][y][z] != id) { blocks[x][y][z] = id; updated = false; return updated; } }
+	inline bool setBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte id) { if (blocks[x][y][z] != id) { blocks[x][y][z] = id; updated = false; } return updated; }
 	inline GLuint getVaoId() { return _vaoId; }
 	inline GLuint getVertexCount() { return _vertexCount; }
-	bool isEqualTo(Chunk * chk);
-	bool isEqualTo(Vec3GLf * v);
 	void update();
 	~Chunk();
+	inline bool operator==(const Chunk* c) { return this->_position == c->_position; }
 private:
 	void loadFromFile(FILE* ptr);
 	void generateChunk();
@@ -80,7 +80,6 @@ private:
 public:
 	memory_pool();
 	void * request_bytes(uint64_t n_bytes);
-	void showWhatYouGot(int k);
 	~memory_pool();
 };
 
@@ -103,12 +102,12 @@ private:
 public:
 	HashTable();
 	void attachMemoryPool(memory_pool * mp);
-	Bucket * getBucketAt(int index); //SOLO PARA SUSTITUIR un ITERADOR POR KEYS
-	Chunk * getChunkByKey(Vec3GLf key);
+	Bucket * getBucketAt(uint64_t index); //SOLO PARA SUSTITUIR un ITERADOR POR KEYS
+	Chunk * getChunkByKey(const Vec3GLui& key);
 	void insertChunk(Chunk * chk);
 	~HashTable();
 
 private:
-	uint64_t computeHashOf(Vec3GLf key);
+	uint64_t computeHashOf(Vec3GLui key);
 };
 

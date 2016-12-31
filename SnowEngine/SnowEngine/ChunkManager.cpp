@@ -27,7 +27,7 @@ GLubyte ChunkManager::getBlockAt(GLuint x, GLuint y, GLuint z) {
 void ChunkManager::setBlockAt(GLuint x, GLuint y, GLuint z, GLubyte type) {
 	Chunk* c;
 
-	c = ht->getChunkByKey(Vec3GLf(x / Chunk::CHUNK_SIZE, y / Chunk::CHUNK_SIZE, z / Chunk::CHUNK_SIZE));
+	c = ht->getChunkByKey(Vec3GLui(x / Chunk::CHUNK_SIZE, y / Chunk::CHUNK_SIZE, z / Chunk::CHUNK_SIZE));
 	
 	if(c != nullptr) c->setBlock(x % Chunk::CHUNK_SIZE, y % Chunk::CHUNK_SIZE, z % Chunk::CHUNK_SIZE, type);
 }
@@ -53,7 +53,7 @@ void ChunkManager::update() {
 
 Chunk* ChunkManager::getChunk(GLuint x, GLuint y, GLuint z) {
 
-	return ht->getChunkByKey(Vec3GLf(x, y, z));
+	return ht->getChunkByKey(Vec3GLui(x, y, z));
 }
 
 ChunkManager::~ChunkManager()

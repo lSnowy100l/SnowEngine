@@ -14,8 +14,7 @@ Vec3GLf Camera::getLookAt() {
 }
 
 Mat4GLf Camera::getRotationMatrix() {
-#define DEG_TO_RAD 0.01745329251
-	double radPitch = _pitch * DEG_TO_RAD, radYaw = _yaw * DEG_TO_RAD;
+	float radPitch = _pitch * DEG_TO_RAD, radYaw = _yaw * DEG_TO_RAD;
 	Vec3GLf right_v	(cosf(radYaw), 0, sinf(radYaw));
 	Vec3GLf up_v	(sinf(radYaw)*sinf(radPitch), cosf(radPitch), -cosf(radYaw)*sinf(radPitch));
 	Vec3GLf back_v	(-sinf(radYaw)*cosf(radPitch), sinf(radPitch), cosf(radYaw)*cosf(radPitch));
@@ -26,16 +25,16 @@ Mat4GLf Camera::getRotationMatrix() {
 }
 
 void Camera::incRelPos(Vec3GLf increment) {
-	double yawRad = _yaw*DEG_TO_RAD;
-	double pitchRad = _pitch*DEG_TO_RAD;
+	float yawRad = _yaw*DEG_TO_RAD;
+	float pitchRad = _pitch*DEG_TO_RAD;
 
-	double advance_x = increment.x*cosf(yawRad) - increment.z*sinf(yawRad);
-	double advance_z = increment.z*cosf(yawRad) + increment.x*sinf(yawRad);
+	float advance_x = increment.x*cosf(yawRad) - increment.z*sinf(yawRad);
+	float advance_z = increment.z*cosf(yawRad) + increment.x*sinf(yawRad);
 
 	//double absx = cosf(pitchRad)*(advance_x) + sinf(pitchRad)*(advance_x);
-	double absx = advance_x;
-	double absy = increment.z*sinf(pitchRad) + increment.y; //y is incremented in Z because key W increases Z
-	double absz = advance_z;
+	float absx = advance_x;
+	float absy = increment.z*sinf(pitchRad) + increment.y; //y is incremented in Z because key W increases Z
+	float absz = advance_z;
 
 	incAbsPos(Vec3GLf(absx, absy, absz));
 
