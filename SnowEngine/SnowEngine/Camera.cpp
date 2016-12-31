@@ -1,12 +1,15 @@
 #include <iostream>
 #include "Camera.h"
-#include "common.h"
 
 using namespace std;
 
 
-Camera::Camera(GLfloat width, GLfloat height, GLfloat fov, GLfloat znear, GLfloat zfar) : _projectionMatrix(Mat4GLf::projectionMatrix(width, height, fov, znear, zfar))
+Camera::Camera(GLfloat width, GLfloat height, GLfloat fov, GLfloat znear, GLfloat zfar, Vec3GLf position) : _projectionMatrix(Mat4GLf::projectionMatrix(width, height, fov, znear, zfar))
 {
+	this->_position = position;
+	_use_abs_movement = true;
+	_on_jump = false;
+	_start_jump = false;
 }
 
 Vec3GLf Camera::getLookAt() {
@@ -24,20 +27,78 @@ Mat4GLf Camera::getRotationMatrix() {
 	return rotationMatrix;
 }
 
-void Camera::incRelPos(Vec3GLf increment) {
-	float yawRad = _yaw*DEG_TO_RAD;
-	float pitchRad = _pitch*DEG_TO_RAD;
+void Camera::moveCamera(Vec3GLf increment) {
+	this->_yawRad = _yaw*DEG_TO_RAD;
+	this->_pitchRad = _pitch*DEG_TO_RAD;
+	if (this->_use_abs_movement) absoluteMovement(increment); else relativeMovement(increment);
+}
 
-	float advance_x = increment.x*cosf(yawRad) - increment.z*sinf(yawRad);
-	float advance_z = increment.z*cosf(yawRad) + increment.x*sinf(yawRad);
+void Camera::absoluteMovement(Vec3GLf increment) {
 
-	//double absx = cosf(pitchRad)*(advance_x) + sinf(pitchRad)*(advance_x);
-	float absx = advance_x;
-	float absy = increment.z*sinf(pitchRad) + increment.y; //y is incremented in Z because key W increases Z
-	float absz = advance_z;
+	//incAbsPos(Vec3GLf(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), increment.y, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad)));
+	storeNextIterationMove(increment.x*cosf(_yawRad) - increment.z*sinf(_yawRad), increment.y, increment.z*cosf(_yawRad) + increment.x*sinf(_yawRad));
+}
 
-	incAbsPos(Vec3GLf(absx, absy, absz));
+void Camera::relativeMovement(Vec3GLf increment) {
+	double absx, absy, absz;
 
+	if (increment.x != 0) {
+		absx = increment.x * cosf(_yawRad);
+		absy = 0;
+		absz = increment.x * sinf(_yawRad);
+	}
+	else if (increment.y != 0) {
+		absx = 0;
+		absy = increment.y;
+		absz = 0;
+	}
+	else {
+		absx = cosf(_pitchRad) * (-increment.z * sinf(_yawRad));
+		absy = increment.z * sinf(_pitchRad);
+		absz = cosf(_pitchRad) * increment.z * cosf(_yawRad);
+	}
+	
+	//incAbsPos(Vec3GLf(absx, absy, absz));
+	storeNextIterationMove(absx, absy, absz);
+}
+
+void Camera::setMovementMode(bool mode)
+{
+	this->_use_abs_movement = mode;
+}
+
+void Camera::storeNextIterationMove(GLfloat x, GLfloat y, GLfloat z)
+{
+	_iteration_increment.x += x; _iteration_increment.y += y; _iteration_increment.z += z;
+}
+
+void Camera::updateMovementCamera(double delta_time, Vec3GLf * acceleration)
+{
+	double theoretical_speed = this->getCurrentSpeed()*delta_time;
+	double jump_force = _iteration_increment.y;
+
+
+	_iteration_increment = _iteration_increment.normalized();
+	_iteration_increment *= theoretical_speed;
+
+	
+	if (this->_start_jump) { //If we jumped, do not normalize the jumping power
+		acceleration->y += jump_force;
+		this->_start_jump = false;
+	}
+  
+	if (this->_use_abs_movement) { //Gravity should only affect if jetpack is off
+		_iteration_increment.x += (acceleration->x * delta_time);
+		_iteration_increment.y += (acceleration->y * delta_time);
+		_iteration_increment.z += (acceleration->z * delta_time);
+	}
+	else {
+		//Jetpack is on (do not accumulate gravitational force)
+		acceleration->reset();
+	}
+
+	this->incAbsPos(this->_iteration_increment); 
+	this->resetIterationMove();
 }
 
 

@@ -16,6 +16,8 @@
 #define ENTRY_SIZE (MODULUS*MODULUS*MODULUS)
 #define CHUNK_FOLDER "chunk_data/"
 #define VBO_COUNT 2
+#define OFFSET_BLOCK 0.5 //The offset to the center of a block
+#define SIZE_BLOCK 0.25
 
 struct FileChunkNode {
 	GLubyte block_id;

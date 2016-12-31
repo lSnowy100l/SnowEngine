@@ -7,13 +7,13 @@
 
 #define SENSIBILITY_X 0.2
 #define SENSIBILITY_Y 0.3
-#define N_PR_KEYS 3
-#define CAM_SPEED_NORM 5
-#define CAM_SPEED_FAST 20
+#define N_PR_KEYS 16
+
 
 //Special keys defines
-#define MY_X_KEY 0
-#define MY_TAB_KEY 1
+#define MY_X_KEY 0 //Wireframe mode
+#define MY_TAB_KEY 1 //Speed mode
+#define MY_T_KEY 2 //Jetpack mode
 
 class Window
 {
@@ -33,6 +33,7 @@ public:
 	void handle_key_actions_after_release(GLuint key);
 	inline void associateRenderer(MasterRenderer* renderer) { _renderer = renderer; }
 	friend void cursorCallback(GLFWwindow* window, double xpos, double ypos);
+	double getDeltaTime() { return deltaTime; }
 	~Window();
 private:
 	void setWindowHints();

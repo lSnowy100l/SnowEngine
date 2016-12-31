@@ -12,11 +12,14 @@ ChunkManager::ChunkManager(ChunkRenderer* renderer) : _renderer(renderer)
 	ht->attachMemoryPool(mp);
 
 	//Creating random chunks
-	for (int i = 0; i < 1; i++) {
-		for (int j = 0; j < 1; j++)
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 6; j++)
 			ht->insertChunk(new Chunk(i, 0, j));
 	}
 
+	ht->insertChunk(new Chunk(4, 1, 4));
+	ht->insertChunk(new Chunk(4, 2, 4));
+	ht->insertChunk(new Chunk(4, 3, 4));
 }
 
 GLubyte ChunkManager::getBlockAt(GLuint x, GLuint y, GLuint z) {

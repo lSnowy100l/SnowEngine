@@ -9,6 +9,7 @@
 #include "MasterRenderer.h"
 #include "ChunkManager.h"
 #include "common.h"
+#include "Player.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -22,6 +23,8 @@ Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
 int main() {
 	
 
+	std::cout << "Verifying 64 bits compatibility ... ";
+	((sizeof(int *) == 8)) ? fprintf(stdout, "Correct\n") : terror("System is not 64 bits, exiting.", -1);
 	
 	// GLFW Libraries initialization
 	if (!glfwInit()) terror("Failed to initialize GLFW library", -1);
@@ -39,19 +42,21 @@ int main() {
 	glewExperimental = GL_TRUE;
 
 	
-	Camera* camera = new Camera(WIDTH, HEIGHT, 70, 0.01, 1000);
-	camera->incAbsPos(Vec3GLf(70.0, 34.0, 70.0));
+	Camera * camera = new Camera(WIDTH, HEIGHT, 70, 0.01, 1000, Vec3GLf(70,50,70));
 	
-	MasterRenderer* renderer = new MasterRenderer(camera);
-	ChunkRenderer* cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
+	MasterRenderer * renderer = new MasterRenderer(camera);
+	ChunkRenderer * cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
 	renderer->addRenderer(cr);
 	w->associateRenderer(renderer);
-	ChunkManager* cm = new ChunkManager(cr);
+	ChunkManager * cm = new ChunkManager(cr);
 	
-	
+	World * planet_earth = new World(3/2);
+
+	Player * p = new Player(camera, cm, planet_earth);
 	
 	//Game loop
 	while (w->shouldClose() == 0) {
+		/*
 		for (int i = -2; i < 3; i++) {
 			for (int j = -2; j < 3; j++) {
 				for (int k = -2; k < 3; k++) {
@@ -59,14 +64,16 @@ int main() {
 				}
 			}
 		}
-		
+		*/
 		cm->update();
 		w->update();
+		p->updatePlayerMovement(w->getDeltaTime());
 	}
 
 	delete cm;
 	delete w;
 	delete renderer;
+	delete p;
 
 	glfwTerminate();
 
