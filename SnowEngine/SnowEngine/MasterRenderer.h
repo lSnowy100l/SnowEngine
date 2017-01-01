@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "Vec3GLf.h"
+#include "Utils.h"
 #include "Chunk.h"
 #include "Camera.h"
 
@@ -14,7 +14,7 @@ class Renderer;
 class MasterRenderer
 {
 private:
-	Camera* _camera;
+	Camera * _camera;
 	std::vector<Renderer*> _renderers;
 	double _s = 0, _a = 0;
 public:
@@ -22,7 +22,7 @@ public:
 	void renderAll();
 	void addRenderer(Renderer* renderer) { _renderers.push_back(renderer); }
 	inline double getFps() { return 1 / (_a - _s); }
-	inline Camera* getCamera() { return _camera; }
+	inline Camera * getCamera() { return _camera; }
 	~MasterRenderer();
 };
 
@@ -46,7 +46,9 @@ struct ChunkNode {
 	Chunk* chunk;
 };
 
-class ChunkRenderer : public Renderer {
+class ChunkRenderer :
+	public Renderer
+{
 private:
 	ChunkNode* first_Chunk;
 	GLint translationMatrixLoc, rotationMatrixLoc, projectionMatrixLoc, chunkTranslationMatrixLoc;

@@ -28,8 +28,8 @@ Mat4GLf Camera::getRotationMatrix() {
 }
 
 void Camera::moveCamera(Vec3GLf increment) {
-	this->_yawRad = _yaw*DEG_TO_RAD;
-	this->_pitchRad = _pitch*DEG_TO_RAD;
+	this->_yawRad = _yaw * DEG_TO_RAD;
+	this->_pitchRad = _pitch * DEG_TO_RAD;
 	if (this->_use_abs_movement) absoluteMovement(increment); else relativeMovement(increment);
 }
 

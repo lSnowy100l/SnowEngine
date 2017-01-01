@@ -1,7 +1,5 @@
 #include "MasterRenderer.h"
 
-
-
 MasterRenderer::MasterRenderer(Camera* camera) : _camera(camera)
 {
 }
@@ -15,7 +13,6 @@ void MasterRenderer::renderAll()
 		r->render();
 	}
 }
-
 
 MasterRenderer::~MasterRenderer()
 {

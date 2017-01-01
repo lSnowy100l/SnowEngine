@@ -1,7 +1,5 @@
 #include "Entity.h"
 
-
-
 Entity::Entity(Vec3GLf position, GLfloat movementForce, GLfloat mass) :
 	_position(position),
 	_movement_force(movementForce),
@@ -9,14 +7,10 @@ Entity::Entity(Vec3GLf position, GLfloat movementForce, GLfloat mass) :
 {
 }
 
-
 void Entity::updateMovement(GLfloat delta_time)
 {
-	_forces /= _mass;
-	_velocity += _forces;
-	_position.x += _velocity.x*delta_time;
-	_position.y += _velocity.y*delta_time;
-	_position.z += _velocity.z*delta_time;
+	_velocity += _forces / _mass;
+	_position += _velocity * delta_time;
 
 	additionalMovementUpdates(delta_time);
 	_forces.reset();

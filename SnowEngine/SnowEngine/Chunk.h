@@ -5,7 +5,8 @@
 #include <sstream>
 #include <iostream>
 #include <inttypes.h>
-#include "Vec3GLf.h"
+
+#include "Utils.h"
 #include "common.h"
 
 #define BLOCK_COUNT 2

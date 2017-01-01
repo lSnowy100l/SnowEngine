@@ -15,14 +15,7 @@
 #define HEIGHT 720
 #define TITLE "First Window"
 
-Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
-	v1 += v2;
-	return v1;
-}
-
 int main() {
-	
-
 	std::cout << "Verifying 64 bits compatibility ... ";
 	((sizeof(int *) == 8)) ? fprintf(stdout, "Correct\n") : terror("System is not 64 bits, exiting.", -1);
 	

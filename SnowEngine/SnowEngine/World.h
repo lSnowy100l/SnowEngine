@@ -7,7 +7,7 @@
 class World
 {
 private:
-	double _world_gravity;
+	GLfloat _world_gravity;
 	std::vector<Entity*> _entity_list;
 public:
 	World(double gravity);

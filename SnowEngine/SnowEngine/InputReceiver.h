@@ -2,7 +2,8 @@
 
 #include "GLFW/glfw3.h"
 
-class InputReceiver {
+class InputReceiver
+{
 public:
 	virtual void receiveInput(GLFWwindow* window, GLfloat delta_time) = 0;
 };

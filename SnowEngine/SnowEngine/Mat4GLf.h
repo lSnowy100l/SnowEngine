@@ -1,16 +1,18 @@
 #pragma once
 
 #include <GL/glew.h>
-#include "Vec3GLf.h"
+#include "Utils.h"
 
-struct Mat4GLf {
+struct Mat4GLf
+{
 	GLfloat data[16];
 	Mat4GLf() {
 		for (int i = 0; i < 16; i++) {
 			data[i] = 0;
 		}
 	}
-	static Mat4GLf projectionMatrix(GLfloat width, GLfloat height, GLfloat fov, GLfloat znear, GLfloat zfar) {
+	static Mat4GLf projectionMatrix(GLfloat width, GLfloat height, GLfloat fov, GLfloat znear, GLfloat zfar)
+	{
 		GLfloat ar = width / height;
 		Mat4GLf m;
 		m.data[0] = 1 / (ar*tanf(fov/2));
@@ -20,7 +22,8 @@ struct Mat4GLf {
 		m.data[14] = -(2 * zfar*znear) / (zfar - znear);
 		return m;
 	}
-	static Mat4GLf translationMatrix(Vec3GLf translation) {
+	static Mat4GLf translationMatrix(Vec3GLf translation)
+	{
 		Mat4GLf m;
 		m.data[0] = 1;
 		m.data[5] = 1;
@@ -31,7 +34,8 @@ struct Mat4GLf {
 		m.data[14] = translation.z;
 		return m;
 	}
-	static Mat4GLf viewRotationMatrix(Vec3GLf rightVector, Vec3GLf backVector, Vec3GLf upVector) {
+	static Mat4GLf viewRotationMatrix(Vec3GLf rightVector, Vec3GLf backVector, Vec3GLf upVector)
+	{
 		Mat4GLf m;
 		m.data[0] = rightVector.x;
 		m.data[1] = upVector.x;
