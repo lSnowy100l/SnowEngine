@@ -1,5 +1,11 @@
 #include "Utils.h"
 
+void terror(const char * msg, int error) {
+	fprintf(stderr, "ERROR [%d]: %s\n", error, msg);
+	getchar();
+	exit(error);
+}
+
 // Binary aritmetic operators
 Vec3GLf& operator+(Vec3GLf v1, const Vec3GLf& v2)
 {
@@ -23,6 +29,12 @@ Vec3GLf& operator/(Vec3GLf v, GLfloat s)
 {
 	v /= s;
 	return v;
+}
+
+// Unary operators
+Vec3GLf Vec3GLf::operator-()
+{
+	return Vec3GLf(-x, -y, -z);
 }
 
 // Compound assignment operators

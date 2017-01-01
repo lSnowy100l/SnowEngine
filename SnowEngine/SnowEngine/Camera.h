@@ -3,8 +3,6 @@
 #include <iostream>
 
 #include "Utils.h"
-#include "Mat4GLf.h"
-#include "common.h"
 
 #define CAM_SPEED_NORM 15
 #define CAM_SPEED_FAST 50

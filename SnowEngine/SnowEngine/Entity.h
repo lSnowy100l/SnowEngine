@@ -1,6 +1,5 @@
 #pragma once
 #include "Utils.h"
-#include "common.h"
 
 class Entity {
 protected:

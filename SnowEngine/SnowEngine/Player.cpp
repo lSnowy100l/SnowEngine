@@ -15,8 +15,7 @@ Player::Player(Camera * camera, ChunkManager * chk_manager, World * w, Vec3GLf p
 
 bool Player::isTouching(Vec3GLf position)
 {
-	if(this->_chk_manager->getBlockAt((unsigned)position.x, (unsigned)position.y, (unsigned)position.z) != NULL) return true;
-	return false;
+	return this->_chk_manager->getBlockAt((unsigned)position.x, (unsigned)position.y, (unsigned)position.z) != NULL;
 }
 
 void Player::receiveInput(GLFWwindow* window, GLfloat delta_time) {

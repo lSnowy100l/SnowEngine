@@ -7,7 +7,6 @@
 #include <inttypes.h>
 
 #include "Utils.h"
-#include "common.h"
 
 #define BLOCK_COUNT 2
 #define CHUNK_POW 5

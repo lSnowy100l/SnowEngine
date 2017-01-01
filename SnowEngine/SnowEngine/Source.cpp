@@ -8,7 +8,6 @@
 #include "Chunk.h"
 #include "MasterRenderer.h"
 #include "ChunkManager.h"
-#include "common.h"
 #include "Player.h"
 
 #define WIDTH 1280

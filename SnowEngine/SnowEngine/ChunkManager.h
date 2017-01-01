@@ -1,8 +1,6 @@
 #pragma once
 
 #include "MasterRenderer.h"
-#include "common.h"
-
 
 class ChunkManager
 {
