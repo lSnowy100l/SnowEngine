@@ -8,7 +8,6 @@
 
 #define CAM_SPEED_NORM 15
 #define CAM_SPEED_FAST 50
-#define JUMP_FORCE 30
 
 class Camera
 {

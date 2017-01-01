@@ -2,25 +2,31 @@
 
 
 
-Entity::Entity(Vec3GLf position, GLfloat movementForce, GLfloat mass) :
+Entity::Entity(Vec3GLf position, GLfloat movementForce, GLfloat mass, ChunkManager * chk) :
 	_position(position),
 	_movement_force(movementForce),
-	_mass(mass)
+	_mass(mass),
+	_chk_manager(chk)
 {
 }
 
-
-void Entity::updateMovement(GLfloat delta_time)
+bool Entity::isOccupied(Vec3GLf position)
 {
-	_forces /= _mass;
-	_velocity += _forces;
-	_position.x += _velocity.x*delta_time;
-	_position.y += _velocity.y*delta_time;
-	_position.z += _velocity.z*delta_time;
-
-	additionalMovementUpdates(delta_time);
-	_forces.reset();
+	if (this->_chk_manager->getBlockAt((unsigned)position.x, (unsigned)position.y, (unsigned)position.z) != NULL) return true;
+	return false;
 }
+
+void Entity::applyFrictionForce()
+{
+	/*
+	//Horizontal friction
+	GLfloat ground_touch = _position.y - this->getEntityHeight();
+	if (isOccupied(Vec3GLf(0, ground_touch, 0))) {
+
+	}
+	*/
+}
+
 
 Entity::~Entity()
 {

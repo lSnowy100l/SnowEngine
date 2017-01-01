@@ -72,6 +72,8 @@ private:
 	void addFace(GLubyte* data, GLfloat* ambientData, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& aoSize);
 };
 
+
+
 class memory_pool {
 
 private:
@@ -82,6 +84,7 @@ private:
 public:
 	memory_pool();
 	void * request_bytes(uint64_t n_bytes);
+	void freePosition(uint64_t n_bytes);
 	~memory_pool();
 };
 

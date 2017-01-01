@@ -1,5 +1,6 @@
 #pragma once
 #include "Vec3GLf.h"
+#include "ChunkManager.h"
 #include "common.h"
 
 class Entity {
@@ -10,13 +11,17 @@ protected:
 	bool _in_air;
 	GLfloat _movement_force;
 	GLfloat _mass;
+
+	ChunkManager * _chk_manager;
 public:
-	Entity(Vec3GLf position, GLfloat movement_force, GLfloat mass);
-	inline GLfloat getMass() { return _mass; }
-	inline Vec3GLf getPosition() { return _position; }
+	Entity(Vec3GLf position, GLfloat movement_force, GLfloat mass, ChunkManager * chk);
+	bool isOccupied(Vec3GLf position);
+	void applyFrictionForce();
+	GLfloat getMass() { return _mass; }
+	Vec3GLf getPosition() { return _position; }
 	inline void applyForce(Vec3GLf force) { _forces += force; }
-	void updateMovement(GLfloat delta_time);
-	inline virtual void additionalMovementUpdates(GLfloat delta_time) {};
+	virtual void updateMovement(GLfloat delta_time) {}
+	//virtual GLfloat getEntityHeight() {}
 	~Entity();
 };
 

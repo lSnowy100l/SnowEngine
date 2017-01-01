@@ -2,21 +2,14 @@
 
 Player::Player(Camera * camera, ChunkManager * chk_manager, World * w, Vec3GLf position) :
 	_player_cam(camera),
-	_chk_manager(chk_manager),
 	_world(w),
-	Entity(position, PLAYER_MOVEMENT_FORCE, PLAYER_MASS)
+	Entity(position, PLAYER_MOVEMENT_FORCE, PLAYER_MASS, chk_manager)
 {
 	//REMEMBER TO CHECK SURROUNDINGS INITIALLY!!!
 	this->_in_air = true;
 
 	for (bool b : spec_keys) b = false;
 	for (bool b : action_spec_keys) b = false;
-}
-
-bool Player::isTouching(Vec3GLf position)
-{
-	if(this->_chk_manager->getBlockAt((unsigned)position.x, (unsigned)position.y, (unsigned)position.z) != NULL) return true;
-	return false;
 }
 
 void Player::receiveInput(GLFWwindow* window, GLfloat delta_time) {
@@ -48,10 +41,14 @@ void Player::receiveInput(GLFWwindow* window, GLfloat delta_time) {
 	forceVector *= _movement_force;
 	applyForce(forceVector);
 
+	//If fly mode is on, remove gravity
+	if (!this->_abs_movement_mode) {
+		applyForce(Vec3GLf(0, this->_world->getWorldGravity(),0));
+	}
+
 	//Jump code
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS /*&& !_in_air*/) {
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !_in_air) {
 		applyForce(Vec3GLf(0, JUMP_FORCE, 0));
-		_in_air = true;
 	}
 }
 
@@ -98,14 +95,30 @@ void Player::externalForcesOnPlayer()
 	this->_velocity.y -= this->_world->getWorldGravity();
 }
 
-void Player::additionalMovementUpdates(GLfloat deltaTime) {
-	/*Vec3GLf camVel = _velocity;
-	camVel *= deltaTime;
-	this->_player_cam->incAbsPos(camVel);*/
+void Player::updateMovement(GLfloat delta_time)
+{
+	_forces /= _mass;
+	_velocity += _forces;
+	_position.x += _velocity.x*delta_time;
+
+	//If the y-position is not ocuppied (this should be done for x and z as well)
+	if (!isOccupied(Vec3GLf(_position.x, (_position.y + _velocity.y*delta_time)-PLAYER_HEIGHT, _position.z))) {
+		_position.y += _velocity.y*delta_time;
+		this->_in_air = true;
+	}
+	else {
+		this->_in_air = false;
+	}
+	
+	_position.z += _velocity.z*delta_time;
+
+	_forces.reset();
+
 	Vec3GLf camPos = _position;
 	camPos.y += PLAYER_HEIGHT;
 	_player_cam->setPosition(camPos);
 }
+
 
 void Player::handle_key_actions_after_release(GLuint key) {
 	switch (key) {

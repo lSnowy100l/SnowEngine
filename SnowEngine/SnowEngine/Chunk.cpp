@@ -380,6 +380,11 @@ void * memory_pool::request_bytes(uint64_t n_bytes)
 	return ptr;
 }
 
+void memory_pool::freePosition(uint64_t n_bytes)
+{
+
+}
+
 memory_pool::~memory_pool()
 {
 	for (int i = 0; i <= this->current_pool; i++) {
