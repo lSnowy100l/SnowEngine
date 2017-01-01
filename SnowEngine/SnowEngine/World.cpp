@@ -1,8 +1,13 @@
 #include "World.h"
 
-World::World(double gravity)
-{
-	this->_world_gravity = gravity;
+World::World(double gravity) : _world_gravity(gravity) {
+}
+
+void World::update(GLfloat delta_time) {
+	for (Entity* e : _entity_list) {
+		e->applyForce(Vec3GLf(0, -_world_gravity, 0));
+		e->updateMovement(delta_time);
+	}
 }
 
 World::~World()

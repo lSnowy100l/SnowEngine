@@ -25,6 +25,13 @@ struct Vec3GLf {
 		return *this;
 	}
 
+	Vec3GLf& operator/=(GLfloat v) { // For scalar multiplication
+		this->x /= v;
+		this->y /= v;
+		this->z /= v;
+		return *this;
+	}
+
 	Vec3GLf operator-() {
 		return Vec3GLf(-x, -y, -z);
 	}

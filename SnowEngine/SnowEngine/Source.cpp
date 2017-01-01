@@ -50,25 +50,17 @@ int main() {
 	gameWindow->associateRenderer(renderer);
 	ChunkManager * cm = new ChunkManager(cr);
 	
-	World * planet_earth = new World(1);
+	World * planet_earth = new World(9.8f);
 
 	Player * p = new Player(camera, cm, planet_earth, Vec3GLf(70, 70-PLAYER_HEIGHT, 70));
 	gameWindow->addInputReceiver(p);
+	planet_earth->addEntity(p);
 
 	// Main game loop
 	while (gameWindow->shouldClose() == 0) {
-		/*
-		for (int i = -2; i < 3; i++) {
-			for (int j = -2; j < 3; j++) {
-				for (int k = -2; k < 3; k++) {
-					cm->setBlockAt(camera->getPosition().x + i, camera->getPosition().y + j, camera->getPosition().z + k, 0);
-				}
-			}
-		}
-		*/
-		cm->update();
 		gameWindow->update();
-		p->updatePlayerMovement(gameWindow->getDeltaTime());
+		cm->update();
+		planet_earth->update(gameWindow->getDeltaTime());
 	}
 
 	delete cm;

@@ -12,6 +12,7 @@ Window::Window(int width, int height, const char* title)
 	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwGetCursorPos(_window, &lxpos, &lypos);
 	glfwSetWindowUserPointer(_window, this);
+
 	glEnable(GL_DEPTH_TEST);
 
 	glEnable(GL_CULL_FACE);
@@ -24,15 +25,15 @@ void Window::update() {
 	lastFrame = newFrame;
 	newFrame = (GLfloat) glfwGetTime();
 	deltaTime = newFrame - lastFrame;
+	glfwPollEvents();
 	processKeyInputs();
 	_renderer->renderAll();
 	glfwSwapBuffers(_window);
-	glfwPollEvents();
 }
 
 void Window::processKeyInputs() {
 	for (InputReceiver* ir : inputReceivers)
-		ir->sendInput(_window, this->getDeltaTime());
+		ir->receiveInput(_window, deltaTime);
 	/*
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS) 
 		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, -_renderer->getCamera()->getCurrentSpeed()));
