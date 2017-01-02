@@ -17,8 +17,8 @@ void TextPanel::addChar(char character, GLfloat* data, GLfloat* texCoords, GLuin
 	GLfloat
 		pos_left_x = _char_pointer + cd.xoffset,
 		pos_right_x = pos_left_x + cd.width,
-		pos_top_y = cd.yoffset + cd.height,
-		pos_bot_y = cd.yoffset;
+		pos_top_y = 100 - cd.yoffset,
+		pos_bot_y = 100 - cd.yoffset - cd.height;
 
 	GLfloat
 		tex_left_x = cd.x / 512.0f,
