@@ -1,5 +1,6 @@
 #pragma once
 #include "MasterRenderer.h"
+#include "TextPanel.h"
 
 GUIRenderer::GUIRenderer(MasterRenderer* renderer, const char* vertexShaderFilePath, const char* fragmentShaderFilePath) {
 	_renderer = renderer;
@@ -16,18 +17,25 @@ GUIRenderer::GUIRenderer(MasterRenderer* renderer, const char* vertexShaderFileP
 
 void GUIRenderer::render() {
 	glUseProgram(_programId);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
 	GLfloat data[] = { 0.00078125, 0, 0, 0, 0, 0.00138888888888888888888888888888, 0, 0, 0, 0, 1, 0, -1, -1, 0, 1 };
 	glUniformMatrix4fv(_toPixelsMatrixLoc, 1, GL_FALSE, &data[0]);
 	for (GUI* gui : gui_list) {
+		TextPanel* tp = (TextPanel*)gui;
+		tp->update();
 		glBindVertexArray(gui->getVaoId());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glBindTexture(GL_TEXTURE_2D, gui->getTexture()->getId());
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glDrawArrays(GL_TRIANGLES, 0, gui->getVertexCount());
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 	glUseProgram(NULL);
 }
 

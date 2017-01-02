@@ -9,9 +9,10 @@
 #include "MasterRenderer.h"
 #include "ChunkManager.h"
 #include "common.h"
+#include "TextPanel.h"
 
-#define WIDTH 1680
-#define HEIGHT 1050
+#define WIDTH 1280
+#define HEIGHT 720
 #define TITLE "First Window"
 
 Vec3GLf operator+(Vec3GLf v1, const Vec3GLf& v2) {
@@ -44,11 +45,13 @@ int main() {
 	GUIRenderer* gr = new GUIRenderer(renderer, "guiVertexShader.vert", "guiFragmentShader.frag");
 	renderer->addRenderer(cr);
 	renderer->addRenderer(gr);
-	gr->addGUI(new GUI());
+	TextPanel* fpsPanel = new TextPanel("font.png", "font.fnt", "0123456789");
+	gr->addGUI(fpsPanel);
 	w->associateRenderer(renderer);
 	ChunkManager* cm = new ChunkManager(cr);
 	
 	//Game loop
+	int i = 0;
 	while (w->shouldClose() == 0) {
 		/*
 		for (int i = -2; i < 3; i++) {
@@ -60,6 +63,11 @@ int main() {
 		}
 		*/
 		cm->update();
+		std::stringstream ss;
+		ss << "FPS: ";
+		ss << renderer->getFps();
+		std::string s = ss.str();
+		fpsPanel->setText(s.c_str());
 		w->update();
 	}
 

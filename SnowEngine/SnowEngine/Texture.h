@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include "common.h"
+#include "lodepng.h"
 
 class Texture
 {
