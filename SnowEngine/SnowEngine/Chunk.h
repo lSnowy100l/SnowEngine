@@ -4,7 +4,6 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
-#include <inttypes.h>
 
 #include "Utils.h"
 
@@ -46,33 +45,36 @@ public:
 	static const GLubyte CHUNK_SIZE_MINUS = CHUNK_SIZE - 1;
 	static const GLuint CHUNK_SIZE_CUBE = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
 	static const BlockData blockData[2];
+
 private:
-	GLubyte*** blocks;
+	GLubyte*** _blocks;
 	Vec3GLui _position;
 	GLuint _vaoId, _vboId[VBO_COUNT], _vertexCount;
 	FaceData*** _faceData;
-	bool updated = false;
+	bool _updated = false;
+
 public:
 	inline Chunk(GLuint x, GLuint y, GLuint z) : Chunk(Vec3GLui(x, y, z)) {}
 	Chunk(Vec3GLui position);
 	inline Vec3GLui getPosition() { return _position; }
-	inline GLubyte getBlock(GLubyte x, GLubyte y, GLubyte z) { return x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE ? blocks[x][y][z] : 0; }
+	inline GLubyte getBlock(GLubyte x, GLubyte y, GLubyte z) { return x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE ? _blocks[x][y][z] : 0; }
 	void saveToFile();
-	inline bool setBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte id) { if (blocks[x][y][z] != id) { blocks[x][y][z] = id; updated = false; } return updated; }
+	inline bool setBlock(GLubyte x, GLubyte y, GLubyte z, GLubyte id) { if (_blocks[x][y][z] != id) { _blocks[x][y][z] = id; _updated = false; } return _updated; }
 	inline GLuint getVaoId() { return _vaoId; }
 	inline GLuint getVertexCount() { return _vertexCount; }
 	void update();
 	~Chunk();
-	inline bool operator==(const Chunk* c) { return this->_position == c->_position; }
+	inline bool operator==(const Chunk* c) { return _position == c->_position; }
+
 private:
 	void loadFromFile(FILE* ptr);
 	void generateChunk();
 	void insertBlock(GLubyte & x, GLubyte & y, GLubyte & z, GLubyte id);
 	void getFileName(char * file_destination);
-	void addFace(GLubyte* data, GLfloat* ambientData, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& aoSize);
+	void addFace(GLubyte* data, GLfloat* ambient_data, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& aoSize);
 };
 
-class memory_pool {
+class MemoryPool {
 
 private:
 	//TODO add stack of recently free'd positions
@@ -80,9 +82,9 @@ private:
 	uint64_t * base;
 	uint64_t current_pool;
 public:
-	memory_pool();
-	void * request_bytes(uint64_t n_bytes);
-	~memory_pool();
+	MemoryPool();
+	void* requestBytes(uint64_t n_bytes);
+	~MemoryPool();
 };
 
 typedef struct bucket {
@@ -98,18 +100,18 @@ class HashTable
 {
 
 private:
-	struct hashtable * ht; // struct hashtable ht[size_entry]
-	memory_pool * mp;
+	struct hashtable * _hash_table; // struct hashtable ht[size_entry]
+	MemoryPool * _memory_pool;
 
 public:
 	HashTable();
-	void attachMemoryPool(memory_pool * mp);
+	void attachMemoryPool(MemoryPool * _memory_pool);
 	Bucket * getBucketAt(uint64_t index); //SOLO PARA SUSTITUIR un ITERADOR POR KEYS
 	Chunk * getChunkByKey(const Vec3GLui& key);
 	void insertChunk(Chunk * chk);
 	~HashTable();
 
 private:
-	uint64_t computeHashOf(Vec3GLui key);
+	uint64_t hashCode(Vec3GLui key);
 };
 

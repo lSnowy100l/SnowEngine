@@ -19,10 +19,9 @@ int main() {
 	((sizeof(int *) == 8)) ? fprintf(stdout, "Correct\n") : terror("System is not 64 bits, exiting.", -1);
 	
 	// GLFW Libraries initialization
-	if (!glfwInit()) terror("Failed to initialize GLFW library", -1);
+	if (!glfwInit()) terror("Failed to initialize GLFW library, exiting", -1);
 
 	//Show version
-
 	fprintf(stdout, "%s\n", glfwGetVersionString());
 
 	Window* gameWindow = new Window(WIDTH, HEIGHT, TITLE);
@@ -37,25 +36,25 @@ int main() {
 	Camera * camera = new Camera(WIDTH, HEIGHT, 70.0f, 0.01f, 1000.0f, Vec3GLf(70,70,70));
 	
 	MasterRenderer * renderer = new MasterRenderer(camera);
-	ChunkRenderer * cr = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
-	renderer->addRenderer(cr);
+	ChunkRenderer * chunk_renderer = new ChunkRenderer(renderer, "vertexShader.vert", "fragmentShader.frag");
+	renderer->addRenderer(chunk_renderer);
 	gameWindow->associateRenderer(renderer);
-	ChunkManager * cm = new ChunkManager(cr);
+	ChunkManager * chunk_manager = new ChunkManager(chunk_renderer);
 	
 	World * planet_earth = new World(9.8f);
 
-	Player * p = new Player(camera, cm, planet_earth, Vec3GLf(70, 70-PLAYER_HEIGHT, 70));
+	Player * p = new Player(camera, chunk_manager, planet_earth, Vec3GLf(70, 70-PLAYER_HEIGHT, 70));
 	gameWindow->addInputReceiver(p);
 	planet_earth->addEntity(p);
 
 	// Main game loop
-	while (gameWindow->shouldClose() == 0) {
+	while (gameWindow->shouldClose() == GL_FALSE) {
 		gameWindow->update();
-		cm->update();
+		chunk_manager->update();
 		planet_earth->update(gameWindow->getDeltaTime());
 	}
 
-	delete cm;
+	delete chunk_manager;
 	delete gameWindow;
 	delete renderer;
 	delete p;

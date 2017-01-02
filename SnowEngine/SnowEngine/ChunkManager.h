@@ -6,14 +6,14 @@ class ChunkManager
 {
 private:
 	ChunkRenderer* _renderer;
-	HashTable * ht;
-	memory_pool * mp;
+	HashTable* _hash_table;
+	MemoryPool* _memory_pool;
 public:
 	ChunkManager(ChunkRenderer* renderer);
 	void update();
 	Chunk* getChunk(GLuint x, GLuint y, GLuint z);
 	GLubyte getBlockAt(GLuint x, GLuint y, GLuint z);
-	HashTable * getAssociatedHashTable() { return ht; }
+	HashTable* getAssociatedHashTable() { return _hash_table; }
 	void setBlockAt(GLuint x, GLuint y, GLuint z, GLubyte type);
 	~ChunkManager();
 };

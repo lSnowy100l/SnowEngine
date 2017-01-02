@@ -9,7 +9,7 @@ void MasterRenderer::renderAll()
 	// Llama a todos los renderizadores a realizar sus respectivos cometidos.
 	_s = _a;
 	_a = glfwGetTime();
-	for (Renderer* r : _renderers) {
+	for (Renderer* r : _renderer_list) {
 		r->render();
 	}
 }
@@ -17,7 +17,7 @@ void MasterRenderer::renderAll()
 MasterRenderer::~MasterRenderer()
 {
 	// Elimina todos los renderizadores asociados al Master Renderer
-	for (Renderer* r : _renderers) {
+	for (Renderer* r : _renderer_list) {
 		delete r;
 	}
 }

@@ -18,7 +18,7 @@ public:
 	inline Vec3GLf getPosition() { return _position; }
 	inline void applyForce(Vec3GLf force) { _forces += force; }
 	void updateMovement(GLfloat delta_time);
-	inline virtual void additionalMovementUpdates(GLfloat delta_time) {};
+	inline virtual void additionalMovementUpdates() = 0;
 	// Destructor
 	~Entity();
 };

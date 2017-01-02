@@ -36,10 +36,10 @@ private:
 public:
 	Player(Camera * camera, ChunkManager * chk_manager, World * w, Vec3GLf position);
 	bool isTouching(Vec3GLf position);
-	void receiveInput(GLFWwindow * window, GLfloat delta_time);
+	void receiveInput(GLFWwindow * window) override;
 	void computeMovementVector(Vec3GLf & movementVector);
 	void externalForcesOnPlayer();
-	void additionalMovementUpdates(GLfloat deltaTime);
+	void additionalMovementUpdates();
 	void handle_key_actions_after_release(GLuint key);
 	~Player();
 };

@@ -31,9 +31,9 @@ GLuint Renderer::genShader(const char * filePath, GLenum type) {
 
 void Renderer::clear() {
 	glUseProgram(NULL);
-	glDetachShader(_programId, _vertexShaderId);
-	glDetachShader(_programId, _fragmentShaderId);
-	glDeleteShader(_vertexShaderId);
-	glDeleteShader(_fragmentShaderId);
-	glDeleteProgram(_programId);
+	glDetachShader(_program_id, _vertex_shader_id);
+	glDetachShader(_program_id, _fragment_shader_id);
+	glDeleteShader(_vertex_shader_id);
+	glDeleteShader(_fragment_shader_id);
+	glDeleteProgram(_program_id);
 }

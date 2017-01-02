@@ -18,7 +18,7 @@ bool Player::isTouching(Vec3GLf position)
 	return this->_chk_manager->getBlockAt((unsigned)position.x, (unsigned)position.y, (unsigned)position.z) != NULL;
 }
 
-void Player::receiveInput(GLFWwindow* window, GLfloat delta_time) {
+void Player::receiveInput(GLFWwindow* window) {
 	Vec3GLf forceVector(0, 0, 0);
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -97,7 +97,7 @@ void Player::externalForcesOnPlayer()
 	this->_velocity.y -= this->_world->getWorldGravity();
 }
 
-void Player::additionalMovementUpdates(GLfloat deltaTime) {
+void Player::additionalMovementUpdates() {
 	/*Vec3GLf camVel = _velocity;
 	camVel *= deltaTime;
 	this->_player_cam->incAbsPos(camVel);*/

@@ -15,12 +15,12 @@ class MasterRenderer
 {
 private:
 	Camera * _camera;
-	std::vector<Renderer*> _renderers;
+	std::vector<Renderer*> _renderer_list;
 	double _s = 0, _a = 0;
 public:
 	MasterRenderer(Camera* camera);
 	void renderAll();
-	void addRenderer(Renderer* renderer) { _renderers.push_back(renderer); }
+	void addRenderer(Renderer* renderer) { _renderer_list.push_back(renderer); }
 	inline double getFps() { return 1 / (_a - _s); }
 	inline Camera * getCamera() { return _camera; }
 	~MasterRenderer();
@@ -29,12 +29,12 @@ public:
 class Renderer
 {
 protected:
-	GLuint _vertexShaderId, _fragmentShaderId, _programId;
+	GLuint _vertex_shader_id, _fragment_shader_id, _program_id;
 	MasterRenderer* _renderer;
 public:
 	virtual void render() = 0;
 protected:
-	GLuint genShader(const char* filePath, GLenum type);
+	GLuint genShader(const char* source_file_path, GLenum shader_type);
 	void clear();
 private:
 	virtual void getUniformLocations() = 0;
@@ -50,15 +50,15 @@ class ChunkRenderer :
 	public Renderer
 {
 private:
-	ChunkNode* first_Chunk;
-	GLint translationMatrixLoc, rotationMatrixLoc, projectionMatrixLoc, chunkTranslationMatrixLoc;
+	ChunkNode* _first_chunk_node;
+	GLint _translation_matrix_loc, _rotation_matrix_loc, _projection_matrix_loc, _chunk_translation_matrix_loc;
 private:
 	void renderChunk(Chunk * chunk);
 public:
-	ChunkRenderer(MasterRenderer* renderer, const char* vertexShaderFilePath, const char* fragmentShaderFilePath);
-	void getUniformLocations();
-	void getAttribLocations();
-	void render();
+	ChunkRenderer(MasterRenderer* renderer, const char* vertex_shader_file_path, const char* _fragment_shader_file_path);
+	void getUniformLocations() override;
+	void getAttribLocations() override;
+	void render() override;
 	void addToRenderList(Chunk* chunk);
 	~ChunkRenderer();
 };

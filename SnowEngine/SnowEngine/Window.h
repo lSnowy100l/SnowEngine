@@ -28,7 +28,7 @@ public:
 	inline void addInputReceiver(InputReceiver* ir) { inputReceivers.push_back(ir); }
 	inline void associateRenderer(MasterRenderer* renderer) { _renderer = renderer; }
 	friend void cursorCallback(GLFWwindow* window, double xpos, double ypos);
-	double getDeltaTime() { return deltaTime; }
+	GLfloat getDeltaTime() { return deltaTime; }
 	~Window();
 };
 

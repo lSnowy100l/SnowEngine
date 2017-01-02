@@ -1,6 +1,7 @@
 #include "World.h"
 
-World::World(double gravity) : _world_gravity(gravity) {
+World::World(GLfloat gravity) :
+	_world_gravity(gravity) {
 }
 
 void World::update(GLfloat delta_time) {

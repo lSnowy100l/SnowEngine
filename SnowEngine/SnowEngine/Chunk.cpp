@@ -11,11 +11,11 @@ const BlockData Chunk::blockData[] = {
 Chunk::Chunk(Vec3GLui position) : _position(position) {
 	char file_source[MAX_PATH];
 	getFileName(file_source);
-	blocks = new GLubyte**[CHUNK_SIZE];
+	_blocks = new GLubyte**[CHUNK_SIZE];
 	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
-		blocks[x] = new GLubyte*[CHUNK_SIZE];
+		_blocks[x] = new GLubyte*[CHUNK_SIZE];
 		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
-			blocks[x][y] = new GLubyte[CHUNK_SIZE];
+			_blocks[x][y] = new GLubyte[CHUNK_SIZE];
 		}
 	}
 
@@ -31,7 +31,7 @@ Chunk::Chunk(Vec3GLui position) : _position(position) {
 }
 
 void Chunk::insertBlock(GLubyte& x, GLubyte& y, GLubyte& z, GLubyte id) {
-	blocks[x][y][z] = id;
+	_blocks[x][y][z] = id;
 	z = (z + 1) & CHUNK_SIZE_MINUS; // MODULUS
 	if (z == 0) {
 		y = (y + 1) & CHUNK_SIZE_MINUS;
@@ -39,117 +39,118 @@ void Chunk::insertBlock(GLubyte& x, GLubyte& y, GLubyte& z, GLubyte id) {
 	}
 }
 
-void Chunk::addFace(GLubyte* data, GLfloat* ambientData, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& aoSize) {
-	switch (type) {
+void Chunk::addFace(GLubyte* vertex_data, GLfloat* ambient_data, GLubyte face_type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& ao_size)
+{
+	switch (face_type) {
 	case 0:
-		data[size++] = x;		data[size++] = y;		data[size++] = z;
-		data[size++] = x;		data[size++] = y;		data[size++] = z + 1;
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y;		vertex_data[size++] = z;
+		vertex_data[size++] = x;		vertex_data[size++] = y;		vertex_data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
 
-		data[size++] = x;		data[size++] = y;		data[size++] = z;
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
+		vertex_data[size++] = x;		vertex_data[size++] = y;		vertex_data[size++] = z;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
 
 		break;
 	case 1:
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
-		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z + 1;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
 
-		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z;
-		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y + 1;	vertex_data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
 		break;
 	case 2:
-		data[size++] = x;		data[size++] = y;		data[size++] = z + 1;
-		data[size++] = x;		data[size++] = y;		data[size++] = z;
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y;		vertex_data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y;		vertex_data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z + 1;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
 
-		data[size++] = x;		data[size++] = y;		data[size++] = z;
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y;		vertex_data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z + 1;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y - 1, z) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
 		break;
 	case 3:
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
-		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
 
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
-		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
-		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y + 1;	vertex_data[size++] = z;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y + 1, z) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z - 1) == 0)) / 3;
 		break;
 	case 4:
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
-		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z;
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y + 1;	vertex_data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
 
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z;
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z;
-		data[size++] = x;		data[size++] = y;		data[size++] = z;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z;
+		vertex_data[size++] = x;		vertex_data[size++] = y;		vertex_data[size++] = z;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y + 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z - 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y, z - 1) == 0) + (GLfloat)(getBlock(x, y - 1, z - 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z - 1) == 0)) / 3;
 		break;
 	case 5:
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
-		data[size++] = x + 1;	data[size++] = y + 1;	data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z + 1;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y + 1, z + 1) == 0)) / 3;
 		
-		data[size++] = x;		data[size++] = y + 1;	data[size++] = z + 1;
-		data[size++] = x;		data[size++] = y;		data[size++] = z + 1;
-		data[size++] = x + 1;	data[size++] = y;		data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y + 1;	vertex_data[size++] = z + 1;
+		vertex_data[size++] = x;		vertex_data[size++] = y;		vertex_data[size++] = z + 1;
+		vertex_data[size++] = x + 1;	vertex_data[size++] = y;		vertex_data[size++] = z + 1;
 
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z + 1) == 0)) / 3;
-		ambientData[aoSize++] = ((GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y + 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y + 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x - 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x - 1, y - 1, z + 1) == 0)) / 3;
+		ambient_data[ao_size++] = ((GLfloat)(getBlock(x + 1, y, z + 1) == 0) + (GLfloat)(getBlock(x, y - 1, z + 1) == 0) + (GLfloat)(getBlock(x + 1, y - 1, z + 1) == 0)) / 3;
 		break;
 	}
 }
 
 void Chunk::update() {
 	// If the chunk is already up to date don't do anything
-	if (updated) {
+	if (_updated) {
 		return;
 	}
 
@@ -160,28 +161,28 @@ void Chunk::update() {
 	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
 		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
 			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
-				if (blocks[x][y][z] == 0) continue;
-				if (x == 0 || blocks[x - 1][y][z] == 0) {
+				if (_blocks[x][y][z] == 0) continue;
+				if (x == 0 || _blocks[x - 1][y][z] == 0) {
 					//_faceData[x][y][z].ypos = 1;
 					addFace(vertexData, ambientData, 0, x, y, z, size, aoSize);
 				}
-				if (x == CHUNK_SIZE_MINUS || blocks[x + 1][y][z] == 0) {
+				if (x == CHUNK_SIZE_MINUS || _blocks[x + 1][y][z] == 0) {
 					//_faceData[x][y][z].ypos = 1;
 					addFace(vertexData, ambientData, 1, x, y, z, size, aoSize);
 				}
-				if (y == 0 || blocks[x][y - 1][z] == 0) {
+				if (y == 0 || _blocks[x][y - 1][z] == 0) {
 					//_faceData[x][y][z].ypos = 1;
 					addFace(vertexData, ambientData, 2, x, y, z, size, aoSize);
 				}
-				if (y == CHUNK_SIZE_MINUS || blocks[x][y + 1][z] == 0) {
+				if (y == CHUNK_SIZE_MINUS || _blocks[x][y + 1][z] == 0) {
 					//_faceData[x][y][z].ypos = 1;
 					addFace(vertexData, ambientData, 3, x, y, z, size, aoSize);
 				}
-				if (z == 0 || blocks[x][y][z - 1] == 0) {
+				if (z == 0 || _blocks[x][y][z - 1] == 0) {
 					//_faceData[x][y][z].ypos = 1;
 					addFace(vertexData, ambientData, 4, x, y, z, size, aoSize);
 				}
-				if (z == CHUNK_SIZE_MINUS || blocks[x][y][z + 1] == 0) {
+				if (z == CHUNK_SIZE_MINUS || _blocks[x][y][z + 1] == 0) {
 					//_faceData[x][y][z].ypos = 1;
 					addFace(vertexData, ambientData, 5, x, y, z, size, aoSize);
 				}
@@ -201,7 +202,7 @@ void Chunk::update() {
 	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 0, NULL);
 	delete[] vertexData;
 	delete[] ambientData;
-	updated = true;
+	_updated = true;
 }
 
 void Chunk::getFileName(char * file_destination)
@@ -231,13 +232,13 @@ void Chunk::loadFromFile(FILE* ptr) {
 }
 
 void Chunk::generateChunk() {
-	blocks = new GLubyte**[CHUNK_SIZE];
+	_blocks = new GLubyte**[CHUNK_SIZE];
 	for (GLubyte x = 0; x < CHUNK_SIZE; x++) {
-		blocks[x] = new GLubyte*[CHUNK_SIZE];
+		_blocks[x] = new GLubyte*[CHUNK_SIZE];
 		for (GLubyte y = 0; y < CHUNK_SIZE; y++) {
-			blocks[x][y] = new GLubyte[CHUNK_SIZE];
+			_blocks[x][y] = new GLubyte[CHUNK_SIZE];
 			for (GLubyte z = 0; z < CHUNK_SIZE; z++) {
-				blocks[x][y][z] = 1;
+				_blocks[x][y][z] = 1;
 			}
 		}
 	}
@@ -252,7 +253,7 @@ void Chunk::saveToFile()
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			for (int z = 0; z < CHUNK_SIZE; z++) {
-				GLubyte actual = blocks[x][y][z];
+				GLubyte actual = _blocks[x][y][z];
 				if (actual != last_id || amount == 255) {
 					fcn.amount = amount;
 					fcn.block_id = last_id;
@@ -285,37 +286,37 @@ Chunk::~Chunk()
 	glDeleteVertexArrays(1, &_vaoId);
 	for (GLushort x = 0; x < CHUNK_SIZE; x++) {
 		for (GLushort y = 0; y < CHUNK_SIZE; y++) {
-			delete[] blocks[x][y];
+			delete[] _blocks[x][y];
 		}
-		delete[] blocks[x];
+		delete[] _blocks[x];
 	}
-	delete[] blocks;
+	delete[] _blocks;
 }
 
 
 
 HashTable::HashTable()
 {
-	ht = new hashtable[ENTRY_SIZE];
-	if (ht == nullptr) terror("Could not allocate hash table", -1);
+	_hash_table = new hashtable[ENTRY_SIZE];
+	if (_hash_table == nullptr) terror("Could not allocate hash table", -1);
 	for (int i = 0; i < ENTRY_SIZE; i++) {
-		ht[i].bucket_ptr = nullptr;
+		_hash_table[i].bucket_ptr = nullptr;
 	}
 }
 
-void HashTable::attachMemoryPool(memory_pool * mp)
+void HashTable::attachMemoryPool(MemoryPool * _memory_pool)
 {
-	this->mp = mp;
+	this->_memory_pool = _memory_pool;
 }
 
 Bucket * HashTable::getBucketAt(uint64_t index)
 {
-	return this->ht[index].bucket_ptr;
+	return this->_hash_table[index].bucket_ptr;
 }
 
 Chunk * HashTable::getChunkByKey(const Vec3GLui& key)
 {
-	uint64_t hash = this->computeHashOf(key);
+	uint64_t hash = this->hashCode(key);
 	Bucket * ptr = this->getBucketAt(hash);
 
 	while (ptr != nullptr) {
@@ -329,18 +330,18 @@ Chunk * HashTable::getChunkByKey(const Vec3GLui& key)
 void HashTable::insertChunk(Chunk * chk)
 {
 
-	uint64_t hash = this->computeHashOf(chk->getPosition());
+	uint64_t hash = this->hashCode(chk->getPosition());
 
-	Bucket * b = (Bucket *) this->mp->request_bytes((uint64_t) sizeof(Bucket));
+	Bucket * b = (Bucket *) this->_memory_pool->requestBytes((uint64_t) sizeof(Bucket));
 
 
 	b->chk = chk;
 	b->next = nullptr;
 
-	if (this->ht[hash].bucket_ptr != nullptr) {
-		b->next = this->ht[hash].bucket_ptr;
+	if (this->_hash_table[hash].bucket_ptr != nullptr) {
+		b->next = this->_hash_table[hash].bucket_ptr;
 	}
-	this->ht[hash].bucket_ptr = b;
+	this->_hash_table[hash].bucket_ptr = b;
 	
 }
 
@@ -348,12 +349,12 @@ HashTable::~HashTable()
 {
 }
 
-uint64_t HashTable::computeHashOf(Vec3GLui key)
+uint64_t HashTable::hashCode(Vec3GLui key)
 {
 	return (((uint64_t) key.x % MODULUS) + ((uint64_t) key.y % MODULUS)*MODULUS + ((uint64_t) key.z % MODULUS)*MODULUS*MODULUS);
 }
 
-memory_pool::memory_pool()
+MemoryPool::MemoryPool()
 {
 	this->current_pool = 0;
 	this->mem_pool = (char **) malloc(MAX_MEM_POOLS * sizeof(char *));
@@ -364,7 +365,7 @@ memory_pool::memory_pool()
 	if (this->mem_pool[0] == nullptr) terror("Could not allocate initial memory pool", -1);
 }
 
-void * memory_pool::request_bytes(uint64_t n_bytes)
+void * MemoryPool::requestBytes(uint64_t n_bytes)
 {
 	void * ptr;
 	if (this->base[this->current_pool] + n_bytes >= POOL_SIZE) {
@@ -380,7 +381,7 @@ void * memory_pool::request_bytes(uint64_t n_bytes)
 	return ptr;
 }
 
-memory_pool::~memory_pool()
+MemoryPool::~MemoryPool()
 {
 	for (int i = 0; i <= this->current_pool; i++) {
 		free(this->mem_pool[i]);

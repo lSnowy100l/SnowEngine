@@ -35,7 +35,7 @@ void Window::update()
 void Window::processKeyInputs()
 {
 	for (InputReceiver* ir : inputReceivers)
-		ir->receiveInput(_window, deltaTime);
+		ir->receiveInput(_window);
 	/*
 	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS) 
 		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, -_renderer->getCamera()->getCurrentSpeed()));

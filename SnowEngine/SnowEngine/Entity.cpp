@@ -12,7 +12,7 @@ void Entity::updateMovement(GLfloat delta_time)
 	_velocity += _forces / _mass;
 	_position += _velocity * delta_time;
 
-	additionalMovementUpdates(delta_time);
+	additionalMovementUpdates();
 	_forces.reset();
 }
 
