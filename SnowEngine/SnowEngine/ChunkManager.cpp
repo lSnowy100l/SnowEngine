@@ -18,6 +18,10 @@ ChunkManager::ChunkManager(ChunkRenderer* renderer) : _renderer(renderer)
 	}
 }
 
+GLfloat ChunkManager::getSlidingCoefficient(GLuint x, GLuint y, GLuint z) {
+	return SLIDING_COEF;
+}
+
 GLubyte ChunkManager::getBlockAt(GLuint x, GLuint y, GLuint z) {
 	Chunk* c = getChunk(x / Chunk::CHUNK_SIZE, y / Chunk::CHUNK_SIZE, z / Chunk::CHUNK_SIZE);
 	return c == nullptr ? NULL : c->getBlock(x % Chunk::CHUNK_SIZE, y % Chunk::CHUNK_SIZE, z % Chunk::CHUNK_SIZE);

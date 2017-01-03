@@ -11,3 +11,5 @@ Vec3GLf& operator/(const Vec3GLf& vec, GLfloat div);
 
 void terror(const char * msg, int error);
 
+int signOfValue(GLfloat * val);
+

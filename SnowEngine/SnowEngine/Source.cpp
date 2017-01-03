@@ -52,7 +52,7 @@ int main() {
 	
 	World * planet_earth = new World(9.8f);
 
-	Player * p = new Player(camera, cm, planet_earth, Vec3GLf(70, 70-PLAYER_HEIGHT, 70));
+	Player * p = new Player(camera, cm, Vec3GLf(70, 70-PLAYER_HEIGHT, 70));
 	gameWindow->addInputReceiver(p);
 	planet_earth->addEntity(p);
 

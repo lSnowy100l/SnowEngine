@@ -1,8 +1,7 @@
 #include "Player.h"
 
-Player::Player(Camera * camera, ChunkManager * chk_manager, World * w, Vec3GLf position) :
+Player::Player(Camera * camera, ChunkManager * chk_manager, Vec3GLf position) :
 	_player_cam(camera),
-	_world(w),
 	Entity(position, PLAYER_MOVEMENT_FORCE, PLAYER_MASS, chk_manager)
 {
 	//REMEMBER TO CHECK SURROUNDINGS INITIALLY!!!
@@ -41,11 +40,6 @@ void Player::receiveInput(GLFWwindow* window, GLfloat delta_time) {
 	forceVector *= _movement_force;
 	applyForce(forceVector);
 
-	//If fly mode is on, remove gravity
-	if (!this->_abs_movement_mode) {
-		applyForce(Vec3GLf(0, this->_world->getWorldGravity(),0));
-	}
-
 	//Jump code
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !_in_air) {
 		applyForce(Vec3GLf(0, JUMP_FORCE, 0));
@@ -76,47 +70,43 @@ void Player::computeMovementVector(Vec3GLf& forceVector) {
 	forceVector = absForce;
 }
 
-void Player::externalForcesOnPlayer()
-{
-	//Gravitational force
-	/*Vec3GLf curr_pos = this->_position;
-	curr_pos.y -= 1;
-	for (int i = -1; i < 2; i++) {
-		for (int j = -1; j < 2; j++) {
-			curr_pos.x = this->_position.x + i;
-			curr_pos.z = this->_position.z + j;
-			if (this->isTouching(curr_pos)) {
-				this->_velocity.y = 0;
-				//Add jumping code here
-				return;
-			}
-		}
-	}*/
-	this->_velocity.y -= this->_world->getWorldGravity();
-}
 
 void Player::updateMovement(GLfloat delta_time)
 {
 	_forces /= _mass;
-	_velocity += _forces;
+
+	_velocity.x += _forces.x;
+	_velocity.z += _forces.z;
+
+	
+
 	_position.x += _velocity.x*delta_time;
+	_position.z += _velocity.z*delta_time;
 
 	//If the y-position is not ocuppied (this should be done for x and z as well)
-	if (!isOccupied(Vec3GLf(_position.x, (_position.y + _velocity.y*delta_time)-PLAYER_HEIGHT, _position.z))) {
+	if (!isOccupied(Vec3GLf(_position.x, (_position.y + (_velocity.y+_forces.y)*delta_time)-PLAYER_HEIGHT, _position.z))) {
+		_velocity.y += _forces.y;
 		_position.y += _velocity.y*delta_time;
 		this->_in_air = true;
 	}
 	else {
 		this->_in_air = false;
+		_velocity.y = 0;
 	}
 	
-	_position.z += _velocity.z*delta_time;
+	std::cout << "F: " << _forces << std::endl;
 
 	_forces.reset();
 
 	Vec3GLf camPos = _position;
 	camPos.y += PLAYER_HEIGHT;
 	_player_cam->setPosition(camPos);
+}
+
+bool Player::isAffectedByGravity()
+{
+	if (this->_abs_movement_mode) return true;
+	return false;
 }
 
 

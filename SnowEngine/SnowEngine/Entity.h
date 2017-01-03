@@ -9,6 +9,7 @@ protected:
 	Vec3GLf _velocity = Vec3GLf(0, 0, 0);
 	Vec3GLf _position;
 	bool _in_air;
+	bool _is_affected_by_gravity = true;
 	GLfloat _movement_force;
 	GLfloat _mass;
 
@@ -19,9 +20,10 @@ public:
 	void applyFrictionForce();
 	GLfloat getMass() { return _mass; }
 	Vec3GLf getPosition() { return _position; }
+	virtual bool isAffectedByGravity() = 0;
 	inline void applyForce(Vec3GLf force) { _forces += force; }
 	virtual void updateMovement(GLfloat delta_time) {}
-	//virtual GLfloat getEntityHeight() {}
+	virtual GLfloat getEntityHeight() = 0;
 	~Entity();
 };
 

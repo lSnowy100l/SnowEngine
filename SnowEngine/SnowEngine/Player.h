@@ -25,16 +25,15 @@
 class Player : public InputReceiver, public Entity {
 private:
 	Camera * _player_cam;
-	World * _world;
 	bool _abs_movement_mode = true;
 	bool spec_keys[N_PR_KEYS];
 	bool action_spec_keys[N_PR_KEYS];
 public:
-	Player(Camera * camera, ChunkManager * chk_manager, World * w, Vec3GLf position);
+	Player(Camera * camera, ChunkManager * chk_manager, Vec3GLf position);
 	void receiveInput(GLFWwindow* window, GLfloat delta_time);
 	void computeMovementVector(Vec3GLf &movementVector);
-	void externalForcesOnPlayer();
 	void updateMovement(GLfloat delta_time);
+	bool isAffectedByGravity();
 	GLfloat getEntityHeight() { return PLAYER_HEIGHT; }
 	void handle_key_actions_after_release(GLuint key);
 	~Player();
