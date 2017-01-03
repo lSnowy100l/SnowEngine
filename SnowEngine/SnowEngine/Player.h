@@ -11,7 +11,7 @@
 
 #define NEIGHBOURHOOD 3
 #define PLAYER_HEIGHT 7 //2 blocks
-#define PLAYER_MOVEMENT_FORCE 50.0f
+#define PLAYER_MOVEMENT_FORCE 1000.0f
 #define DEBUG_SPEED 100.0f
 #define JUMP_FORCE 1000.0f
 #define N_PR_KEYS 16

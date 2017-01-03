@@ -50,7 +50,7 @@ int main() {
 	gameWindow->associateRenderer(renderer);
 	ChunkManager * cm = new ChunkManager(cr);
 	
-	World * planet_earth = new World(9.8f);
+	World * planet_earth = new World(100.8f);
 
 	Player * p = new Player(camera, cm, Vec3GLf(70, 70-PLAYER_HEIGHT, 70));
 	gameWindow->addInputReceiver(p);

@@ -75,8 +75,8 @@ void Player::updateMovement(GLfloat delta_time)
 {
 	_forces /= _mass;
 
-	_velocity.x += _forces.x;
-	_velocity.z += _forces.z;
+	_velocity.x += _forces.x*delta_time;
+	_velocity.z += _forces.z*delta_time;
 
 	
 
@@ -85,7 +85,7 @@ void Player::updateMovement(GLfloat delta_time)
 
 	//If the y-position is not ocuppied (this should be done for x and z as well)
 	if (!isOccupied(Vec3GLf(_position.x, (_position.y + (_velocity.y+_forces.y)*delta_time)-PLAYER_HEIGHT, _position.z))) {
-		_velocity.y += _forces.y;
+		_velocity.y += _forces.y*delta_time;
 		_position.y += _velocity.y*delta_time;
 		this->_in_air = true;
 	}
