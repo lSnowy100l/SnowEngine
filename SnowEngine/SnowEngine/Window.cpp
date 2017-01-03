@@ -4,6 +4,7 @@ Window::Window(int width, int height, const char* title)
 {
 	setWindowHints();
 	_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+	if (_window == nullptr) terror("Your graphics card does not support OpenGL 3.2", 1);
 	setWindowCallbacks();
 	glfwGetFramebufferSize(_window, &width, &height);
 	glfwMakeContextCurrent(_window);
@@ -36,35 +37,9 @@ void Window::processKeyInputs()
 {
 	for (InputReceiver* ir : inputReceivers)
 		ir->receiveInput(_window);
-	/*
-	if(glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS) 
-		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, -_renderer->getCamera()->getCurrentSpeed()));
-	if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
-		_renderer->getCamera()->moveCamera(Vec3GLf(-_renderer->getCamera()->getCurrentSpeed(), 0, 0));
-	if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-		_renderer->getCamera()->moveCamera(Vec3GLf(0, 0, _renderer->getCamera()->getCurrentSpeed()));
-	if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
-		_renderer->getCamera()->moveCamera(Vec3GLf(_renderer->getCamera()->getCurrentSpeed(), 0, 0));
-	if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		if (!action_spec_keys[MY_T_KEY]) {
-			//If jetpack mode is off,
-			if (!_renderer->getCamera()->getStartJump() && !_renderer->getCamera()->getJump()) {
-				_renderer->getCamera()->setJump(true);
-				_renderer->getCamera()->setStartJump(true);
-				_renderer->getCamera()->moveCamera(Vec3GLf(0, JUMP_FORCE, 0));
-			}
-		}
-		else {
-			//If it is not
-			_renderer->getCamera()->moveCamera(Vec3GLf(0, _renderer->getCamera()->getCurrentSpeed(), 0));
-		}
-	}
-		
-	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		_renderer->getCamera()->moveCamera(Vec3GLf(0, -_renderer->getCamera()->getCurrentSpeed(), 0));*/
+
 	if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(_window, 1);
-
 }
 
 Window::~Window()
@@ -74,10 +49,11 @@ Window::~Window()
 
 void Window::setWindowHints()
 {
-	/*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);*/
+
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
