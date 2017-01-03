@@ -9,7 +9,7 @@ Entity::Entity(Vec3GLf position, GLfloat movementForce, GLfloat mass) :
 
 void Entity::updateMovement(GLfloat delta_time)
 {
-	_velocity += _forces / _mass;
+	_velocity += _forces * delta_time / _mass;
 	_position += _velocity * delta_time;
 
 	additionalMovementUpdates();
