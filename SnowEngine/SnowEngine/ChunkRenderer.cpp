@@ -2,6 +2,7 @@
 
 
 ChunkRenderer::ChunkRenderer(MasterRenderer* renderer, const char * vertexShaderFilePath, const char * fragmentShaderFilePath) {
+	_first_chunk_node = nullptr;
 	_renderer = renderer;
 	_vertex_shader_id = genShader(vertexShaderFilePath, GL_VERTEX_SHADER);
 	_fragment_shader_id = genShader(fragmentShaderFilePath, GL_FRAGMENT_SHADER);
