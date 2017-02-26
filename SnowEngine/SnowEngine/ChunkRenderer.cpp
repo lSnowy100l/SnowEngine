@@ -2,7 +2,6 @@
 
 
 ChunkRenderer::ChunkRenderer(MasterRenderer* renderer, const char * vertexShaderFilePath, const char * fragmentShaderFilePath) {
-	_first_chunk_node = nullptr;
 	_renderer = renderer;
 	_vertex_shader_id = genShader(vertexShaderFilePath, GL_VERTEX_SHADER);
 	_fragment_shader_id = genShader(fragmentShaderFilePath, GL_FRAGMENT_SHADER);
@@ -20,13 +19,10 @@ void ChunkRenderer::render() {
 	glUniformMatrix4fv(_translation_matrix_loc, 1, GL_FALSE, &_renderer->getCamera()->getTranslationMatrix().data[0]);
 	glUniformMatrix4fv(_rotation_matrix_loc, 1, GL_FALSE, &_renderer->getCamera()->getRotationMatrix().data[0]);
 	glUniformMatrix4fv(_projection_matrix_loc, 1, GL_FALSE, &_renderer->getCamera()->getProjectionMatrix().data[0]);
-	while (_first_chunk_node != nullptr) {	
-		renderChunk(_first_chunk_node->chunk);
-		// Empty render list
-		ChunkNode* aux = _first_chunk_node;
-		_first_chunk_node = _first_chunk_node->next;
-		delete aux;
-	}
+	LinkedIterator<Chunk*> lit = chunk_list.linked_iterator();
+	while (lit.hasNext())
+		renderChunk(lit.next());
+	chunk_list.empty();
 	glUseProgram(NULL);
 }
 
@@ -58,10 +54,7 @@ void ChunkRenderer::renderChunk(Chunk* chunk)
 
 void ChunkRenderer::addToRenderList(Chunk * chunk)
 {
-	ChunkNode* cn = new ChunkNode;
-	cn->chunk = chunk;
-	cn->next = _first_chunk_node;
-	_first_chunk_node = cn;
+	chunk_list.add(chunk);
 }
 
 ChunkRenderer::~ChunkRenderer()

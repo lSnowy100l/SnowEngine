@@ -1,20 +1,25 @@
 #include "ChunkManager.h"
 
+size_t hashFun(Vec3GLui v)
+{
+	return v.x + v.y + v.z;
+}
 
-ChunkManager::ChunkManager(ChunkRenderer* renderer) : _renderer(renderer)
+ChunkManager::ChunkManager(ChunkRenderer* renderer) :
+	_renderer(renderer),
+	_memory_manager(1 << (3 * CHUNK_CACHE_SIZE_POW)),
+	_chunks(hashFun, CHUNK_CACHE_SIZE_POW)
 {
 	//Checking if the data folder exists, otherwise create it
 	if (CreateDirectory(data_directory, NULL) == ERROR_PATH_NOT_FOUND) terror("Could not create/find data folder", -1);
 
-	// Create hash table and memory pool
-	_memory_pool = new MemoryPool();
-	_hash_table = new HashTable();
-	_hash_table->attachMemoryPool(_memory_pool);
-
 	//Creating random chunks
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 20; j++)
-			_hash_table->insertChunk(new Chunk(i, 0, j));
+	for (int i = 0; i < 1; i++) {
+		for (int j = 0; j < 1; j++) {
+			Chunk* c = _memory_manager.requestMemory();
+			new (c) Chunk(i, 0, j);
+			_chunks.put(c->getPosition(), c);
+		}
 	}
 }
 
@@ -26,36 +31,21 @@ GLubyte ChunkManager::getBlockAt(GLuint x, GLuint y, GLuint z) {
 void ChunkManager::setBlockAt(GLuint x, GLuint y, GLuint z, GLubyte type) {
 	Chunk* c;
 
-	c = _hash_table->getChunkByKey(Vec3GLui(x / Chunk::CHUNK_SIZE, y / Chunk::CHUNK_SIZE, z / Chunk::CHUNK_SIZE));
+	c = _chunks.get(Vec3GLui(x / Chunk::CHUNK_SIZE, y / Chunk::CHUNK_SIZE, z / Chunk::CHUNK_SIZE));
 	
 	if(c != nullptr) c->setBlock(x % Chunk::CHUNK_SIZE, y % Chunk::CHUNK_SIZE, z % Chunk::CHUNK_SIZE, type);
 }
 
-
 void ChunkManager::update() {
-	
-	Chunk * c;
-	Bucket * b;
-	for(int i = 0; i < ENTRY_SIZE; i++){
-		b = this->_hash_table->getBucketAt(i);
-		do {
-			if (b != nullptr) {
-				c = b->chk;
-				c->update();
-				_renderer->addToRenderList(c);
-				b = b->next;
-			}
-		} while (b != nullptr);
-	}
+ 	_renderer->addToRenderList(_chunks.get(Vec3GLui(0, 0, 0)));
 }
 
 
 Chunk* ChunkManager::getChunk(GLuint x, GLuint y, GLuint z)
 {
-	return _hash_table->getChunkByKey(Vec3GLui(x, y, z));
+	return _chunks.get(Vec3GLui(x, y, z));
 }
 
 ChunkManager::~ChunkManager()
 {
-	delete this->_memory_pool;
 }
