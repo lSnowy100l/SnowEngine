@@ -1,19 +1,22 @@
 #pragma once
 
 #include "MasterRenderer.h"
+#include "MemoryManager.h"
+#include "HashMap.h"
+
+#define CHUNK_CACHE_SIZE_POW 3 // 2^3n
 
 class ChunkManager
 {
 private:
 	ChunkRenderer* _renderer;
-	HashTable* _hash_table;
-	MemoryPool* _memory_pool;
+	HashMap<Vec3GLui, Chunk*> _chunks;
+	MemoryManager<Chunk> _memory_manager;
 public:
 	ChunkManager(ChunkRenderer* renderer);
 	void update();
 	Chunk* getChunk(GLuint x, GLuint y, GLuint z);
 	GLubyte getBlockAt(GLuint x, GLuint y, GLuint z);
-	HashTable* getAssociatedHashTable() { return _hash_table; }
 	void setBlockAt(GLuint x, GLuint y, GLuint z, GLubyte type);
 	~ChunkManager();
 };

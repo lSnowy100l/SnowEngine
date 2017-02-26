@@ -9,9 +9,8 @@ void MasterRenderer::renderAll()
 	// Llama a todos los renderizadores a realizar sus respectivos cometidos.
 	_s = _a;
 	_a = glfwGetTime();
-	for (Renderer* r : _renderer_list) {
+	for (Renderer* r : _renderer_list)
 		r->render();
-	}
 }
 
 MasterRenderer::~MasterRenderer()

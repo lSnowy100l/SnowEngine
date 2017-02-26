@@ -8,6 +8,7 @@
 #include "Utils.h"
 #include "Chunk.h"
 #include "Camera.h"
+#include "LinkedList.h"
 
 class Renderer;
 
@@ -41,16 +42,11 @@ private:
 	virtual void getAttribLocations() = 0;
 };
 
-struct ChunkNode {
-	ChunkNode* next;
-	Chunk* chunk;
-};
-
 class ChunkRenderer :
 	public Renderer
 {
 private:
-	ChunkNode* _first_chunk_node;
+	LinkedList<Chunk*> chunk_list;
 	GLint _translation_matrix_loc, _rotation_matrix_loc, _projection_matrix_loc, _chunk_translation_matrix_loc;
 private:
 	void renderChunk(Chunk * chunk);

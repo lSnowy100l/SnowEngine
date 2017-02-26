@@ -46,11 +46,13 @@ public:
 	static const GLuint CHUNK_SIZE_CUBE = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
 	static const BlockData blockData[2];
 
+	static GLubyte* vertexData;
+	static GLfloat* ambientData;
+
 private:
-	GLubyte*** _blocks;
+	GLubyte _blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 	Vec3GLui _position;
 	GLuint _vaoId, _vboId[VBO_COUNT], _vertexCount;
-	FaceData*** _faceData;
 	bool _updated = false;
 
 public:
@@ -71,47 +73,5 @@ private:
 	void generateChunk();
 	void insertBlock(GLubyte & x, GLubyte & y, GLubyte & z, GLubyte id);
 	void getFileName(char * file_destination);
-	void addFace(GLubyte* data, GLfloat* ambient_data, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& size, GLint& aoSize);
+	void addFace(GLubyte* data, GLfloat* ambient_data, GLubyte type, GLubyte x, GLubyte y, GLubyte z, GLint& _size, GLint& aoSize);
 };
-
-class MemoryPool {
-
-private:
-	//TODO add stack of recently free'd positions
-	char ** mem_pool;
-	uint64_t * base;
-	uint64_t current_pool;
-public:
-	MemoryPool();
-	void* requestBytes(uint64_t n_bytes);
-	~MemoryPool();
-};
-
-typedef struct bucket {
-	Chunk * chk;
-	struct bucket * next;
-} Bucket;
-
-struct hashtable {
-	Bucket * bucket_ptr;
-};
-
-class HashTable
-{
-
-private:
-	struct hashtable * _hash_table; // struct hashtable ht[size_entry]
-	MemoryPool * _memory_pool;
-
-public:
-	HashTable();
-	void attachMemoryPool(MemoryPool * _memory_pool);
-	Bucket * getBucketAt(uint64_t index); //SOLO PARA SUSTITUIR un ITERADOR POR KEYS
-	Chunk * getChunkByKey(const Vec3GLui& key);
-	void insertChunk(Chunk * chk);
-	~HashTable();
-
-private:
-	uint64_t hashCode(Vec3GLui key);
-};
-
